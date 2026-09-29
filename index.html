@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yatharth Rupesh Mehta — Portfolio &amp; Services</title>
+  <meta name="description" content="Yatharth Rupesh Mehta — custom NFC cards & standees, website development, social media and digital marketing, and sales strategies for growing businesses." />
+  <meta name="author" content="Yatharth Rupesh Mehta" />
+  <meta property="og:title" content="Yatharth Rupesh Mehta — Portfolio &amp; Services" />
+  <meta property="og:description" content="Custom NFC cards & standees, websites, social media and digital marketing by Yatharth Rupesh Mehta." />
+  <meta property="og:type" content="website" />
+
+  <!-- Fonts (fall back to system fonts if offline) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c5cff'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='%230b0b14'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='700' text-anchor='middle' fill='url(%23g)' font-family='Space Grotesk, sans-serif'%3EY%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+
+  <!-- Animated background canvas -->
+  <canvas class="bg-canvas" id="bgCanvas" aria-hidden="true"></canvas>
+
+  <!-- Custom cursor (desktop only) -->
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="#home" class="brand" data-cursor="link">
+        <span class="brand-mark" aria-hidden="true">YM</span>
+        <span class="brand-text">Yatharth<span class="brand-dot">.</span></span>
+      </a>
+
+      <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#skills">Skills</a>
+        <a href="#work">Work</a>
+        <a href="#contact" class="btn btn-accent btn-sm nav-cta">Get in touch</a>
+      </nav>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===================== HERO ===================== -->
+    <section class="hero" id="home">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow reveal" data-delay="0">
+            <span class="status-dot" aria-hidden="true"></span>
+            Available for freelance work
+          </p>
+
+          <h1 class="hero-name">
+            <span class="reveal-word" style="--i:0">Hey,</span>
+            <span class="reveal-word" style="--i:1">I'm</span>
+            <span class="reveal-word gradient-text" style="--i:2">Yatharth</span>
+            <span class="reveal-word gradient-text" style="--i:3">Mehta</span>
+          </h1>
+
+          <p class="hero-role reveal" data-delay="6">
+            <span class="role-prefix">I'm a</span>
+            <span class="role-rotator" id="roleRotator" aria-hidden="true"></span><span class="type-caret" aria-hidden="true"></span>
+            <span class="role-sr">web developer, digital marketer and NFC card designer.</span>
+          </p>
+
+          <p class="hero-lead reveal" data-delay="8">
+            I build fast, beautiful websites and craft the growth around them —
+            NFC cards, social media and sales strategy that help businesses
+            look their best and get found. Based in India, working worldwide.
+          </p>
+
+          <div class="hero-cta reveal" data-delay="10">
+            <a href="#work" class="btn btn-accent" data-cursor="link">View my work</a>
+            <a href="#contact" class="btn btn-ghost" data-cursor="link">Hire me</a>
+          </div>
+
+          <div class="hero-socials reveal" data-delay="12">
+            <a href="mailto:yatharthm7@gmail.com" aria-label="Email" data-cursor="link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3 7l9 6 9-6"/></svg>
+            </a>
+            <a href="https://wa.me/919638902001" target="_blank" rel="noopener" aria-label="WhatsApp" data-cursor="link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.13h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.36c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43-.14-.01-.31-.01-.48-.01a.92.92 0 0 0-.66.31c-.23.25-.87.85-.87 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29z"/></svg>
+            </a>
+            <a href="https://github.com/yatharthm7-cpu" target="_blank" rel="noopener" aria-label="GitHub" data-cursor="link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.88 1.52 2.34 1.08 2.9.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.9-1.29 2.74-1.02 2.74-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.86v2.75c0 .27.18.59.69.48A10 10 0 0 0 12 2z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-art reveal" data-delay="8" aria-hidden="true">
+          <div class="orbit">
+            <div class="orbit-ring r1"></div>
+            <div class="orbit-ring r2"></div>
+            <div class="orbit-ring r3"></div>
+            <div class="orbit-core">
+              <span>YM</span>
+            </div>
+            <span class="chip chip-1">&lt;/&gt;</span>
+            <span class="chip chip-2">✦</span>
+            <span class="chip chip-3">◍</span>
+          </div>
+        </div>
+      </div>
+
+      <a href="#about" class="scroll-indicator" aria-label="Scroll to about" data-cursor="link">
+        <span>Scroll</span>
+        <span class="scroll-line" aria-hidden="true"></span>
+      </a>
+    </section>
+
+    <!-- ===================== MARQUEE ===================== -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>NFC Cards &amp; Standees</span><span>✦</span><span>Websites</span><span>✦</span>
+        <span>Social Media</span><span>✦</span><span>Digital Marketing</span><span>✦</span>
+        <span>Sales Strategy</span><span>✦</span><span>Branding</span><span>✦</span>
+        <span>NFC Cards &amp; Standees</span><span>✦</span><span>Websites</span><span>✦</span>
+        <span>Social Media</span><span>✦</span><span>Digital Marketing</span><span>✦</span>
+        <span>Sales Strategy</span><span>✦</span><span>Branding</span><span>✦</span>
+      </div>
+    </div>
+
+    <!-- ===================== SCROLL SHOWCASE ===================== -->
+    <section class="ss-section" id="showcase">
+      <div class="ss-stage" id="scrollShowcase">
+        <div class="ss-inner">
+          <div class="ss-header">
+            <p class="section-tag reveal">Showcase</p>
+            <h2 class="reveal" data-delay="1">
+              Every project gets the <span class="gradient-text">full treatment</span>
+            </h2>
+          </div>
+
+          <div class="ss-card-wrap">
+            <div class="ss-card">
+              <div class="ss-card-screen">
+                <div class="ss-bar">
+                  <span class="ss-dot"></span><span class="ss-dot"></span><span class="ss-dot"></span>
+                  <span class="ss-url font-pixel">yatharthm7.dev</span>
+                </div>
+                <div class="ss-body">
+                  <div class="ss-side">
+                    <span class="ss-side-item active"></span>
+                    <span class="ss-side-item"></span>
+                    <span class="ss-side-item"></span>
+                    <span class="ss-side-item"></span>
+                    <span class="ss-side-item"></span>
+                  </div>
+                  <div class="ss-main">
+                    <div class="ss-hero"></div>
+                    <div class="ss-row">
+                      <span class="ss-tile"></span>
+                      <span class="ss-tile"></span>
+                      <span class="ss-tile"></span>
+                    </div>
+                    <div class="ss-chart">
+                      <span style="--h:45%"></span>
+                      <span style="--h:70%"></span>
+                      <span style="--h:35%"></span>
+                      <span style="--h:85%"></span>
+                      <span style="--h:55%"></span>
+                      <span style="--h:95%"></span>
+                      <span style="--h:65%"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section class="section" id="about">
+      <div class="container about-inner">
+        <div class="about-art reveal">
+          <div class="avatar-card">
+            <div class="avatar">
+              <img class="avatar-img" src="assets/profile.jpg" alt="Yatharth Rupesh Mehta" width="600" height="600" fetchpriority="high" />
+            </div>
+            <div class="avatar-badge">
+              <strong>19</strong>
+              <span>years young</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-copy">
+          <p class="section-tag reveal">About me</p>
+          <h2 class="reveal" data-delay="1">Young mind, <span class="gradient-text">serious craft</span></h2>
+          <div class="about-text">
+            <p class="reveal" data-delay="2">
+              I'm <strong>Yatharth Rupesh Mehta</strong>, a 19-year-old developer and designer
+              who turns ideas into smooth, modern web experiences. I started building
+              for the web out of pure curiosity — and that curiosity hasn't stopped since.
+            </p>
+            <p class="reveal" data-delay="3">
+              Every project I take on is treated like it's my own: clean code,
+              thoughtful design, and the little animation details that make a site
+              feel <em>alive</em>. Whether you need a personal portfolio, a business
+              landing page or a full redesign, I'll make sure it looks great and
+              loads fast.
+            </p>
+          </div>
+
+          <ul class="about-facts reveal" data-delay="4">
+            <li>
+              <span class="fact-ico" aria-hidden="true">🎂</span>
+              <span><strong>Born</strong><br />21 November 2006</span>
+            </li>
+            <li>
+              <span class="fact-ico" aria-hidden="true">📍</span>
+              <span><strong>Based in</strong><br />India</span>
+            </li>
+            <li>
+              <span class="fact-ico" aria-hidden="true">✉</span>
+              <span><strong>Email</strong><br /><a href="mailto:yatharthm7@gmail.com">yatharthm7@gmail.com</a></span>
+            </li>
+            <li>
+              <span class="fact-ico" aria-hidden="true">⚡</span>
+              <span><strong>Focus</strong><br />Web &amp; Growth</span>
+            </li>
+          </ul>
+
+          <a href="#contact" class="btn btn-accent reveal" data-delay="5" data-cursor="link">Let's work together</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SERVICES ===================== -->
+    <section class="section section-alt" id="services">
+      <div class="container">
+        <div class="section-head">
+          <p class="section-tag reveal">Services</p>
+          <h2 class="reveal" data-delay="1">What I can <span class="gradient-text">do for you</span></h2>
+          <p class="section-note reveal" data-delay="2">
+            From a tap-ready NFC card to a full growth strategy — everything
+            you need to look sharp and get found, in one place.
+          </p>
+        </div>
+
+        <div class="grid grid-services">
+          <article class="card service-card reveal" data-delay="0">
+            <div class="svc-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="14" width="24" height="20" rx="3" /><path d="M12 24h6" /><path d="M36 20a10 10 0 0 1 0 8" /><path d="M30 27l8-9" /><path d="M15 34l-3 7M21 34l3 7" /></svg>
+            </div>
+            <h3>Custom NFC Cards &amp; Standees</h3>
+            <p>Tap-to-share smart cards and table standees that link straight to your site, menu or profile — branded, printed and delivered.</p>
+            <span class="svc-more" aria-hidden="true">→</span>
+          </article>
+
+          <article class="card service-card reveal" data-delay="1">
+            <div class="svc-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10h13l5 8H8z" /><path d="M8 18v20h32V18" /><path d="M21 10l5 8h14l-5-8z" /><path d="M18 28h12" /></svg>
+            </div>
+            <h3>Website Development</h3>
+            <p>Fast, modern, responsive websites built with clean code — landing pages, portfolios and full business sites that load in a blink.</p>
+            <span class="svc-more" aria-hidden="true">→</span>
+          </article>
+
+          <article class="card service-card reveal" data-delay="2">
+            <div class="svc-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="4" /><circle cx="11" cy="11" r="4" /><circle cx="37" cy="11" r="4" /><circle cx="11" cy="37" r="4" /><circle cx="37" cy="37" r="4" /><path d="M21 21l-7-7M27 21l7-7M21 27l-7 7M27 27l7 7" /></svg>
+            </div>
+            <h3>Social Media Marketing</h3>
+            <p>Content, posts and campaigns that build a real following — consistent branding across Instagram, Facebook and beyond.</p>
+            <span class="svc-more" aria-hidden="true">→</span>
+          </article>
+
+          <article class="card service-card reveal" data-delay="3">
+            <div class="svc-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 26l8-4 8 4 8-6 8 6" /><path d="M6 34l8-3 8 3 8-5 8 5" /><circle cx="14" cy="14" r="3" /><circle cx="30" cy="11" r="3" /><path d="M17 13l10-2" /></svg>
+            </div>
+            <h3>Digital Marketing</h3>
+            <p>Ads, funnels and search strategy that put your business in front of the right people and turn clicks into customers.</p>
+            <span class="svc-more" aria-hidden="true">→</span>
+          </article>
+
+          <article class="card service-card reveal" data-delay="4">
+            <div class="svc-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 5l16 8v12c0 9-7 15-16 18-9-3-16-9-16-18V13z" /><path d="M17 23l5 5 9-10" /></svg>
+            </div>
+            <h3>Sales Strategies</h3>
+            <p>Offers, pricing and follow-up systems that close more deals — practical playbooks built for how your business actually sells.</p>
+            <span class="svc-more" aria-hidden="true">→</span>
+          </article>
+        </div>
+
+        <p class="section-foot reveal">
+          Have something else in mind? <a href="#contact" class="text-link" data-cursor="link">Tell me about it</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== NFC PRODUCT ===================== -->
+    <section class="section section-alt" id="nfc">
+      <div class="container">
+        <div class="nfc-grid">
+          <div class="nfc-copy">
+            <p class="section-tag reveal">Tapvora · Signature Build</p>
+            <h2 class="reveal" data-delay="1">More reviews.<br /><span class="gradient-text">One tap away.</span></h2>
+            <p class="section-note reveal" data-delay="2">
+              Tapvora is my own NFC + QR review-card product. One beautifully simple
+              card sends customers straight to your Google review page — by tap or
+              scan, no app, no searching.
+            </p>
+            <ul class="nfc-features reveal" data-delay="3">
+              <li><span aria-hidden="true">▸</span> Works with iPhone &amp; Android — nothing to install</li>
+              <li><span aria-hidden="true">▸</span> One permanent URL, retargetable from the dashboard</li>
+              <li><span aria-hidden="true">▸</span> Standard 85&nbsp;×&nbsp;54&nbsp;mm card, print-ready artwork</li>
+              <li><span aria-hidden="true">▸</span> Print once. Update forever.</li>
+            </ul>
+            <div class="nfc-cta reveal" data-delay="4">
+              <a href="https://tapvora.in" target="_blank" rel="noopener" class="btn btn-accent" data-cursor="link">Visit tapvora.in</a>
+              <a href="#contact" class="btn btn-ghost" data-cursor="link">Order cards</a>
+            </div>
+          </div>
+
+          <div class="nfc-art reveal" data-delay="2" id="nfcArt">
+            <div class="nfc-card" id="nfcCard">
+              <img class="nfc-card-img" src="assets/tapvora-card.png" alt="Tapvora NFC + QR review card" width="1004" height="638" loading="lazy" />
+              <div class="nfc-glow" aria-hidden="true"></div>
+            </div>
+            <p class="nfc-hint">Hover the card</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SKILLS ===================== -->
+    <section class="section" id="skills">
+      <div class="container">
+        <div class="section-head">
+          <p class="section-tag reveal">Skills</p>
+          <h2 class="reveal" data-delay="1">Tools of the <span class="gradient-text">trade</span></h2>
+          <p class="section-note reveal" data-delay="2">The tech I reach for, and how confident I am with each.</p>
+        </div>
+
+        <div class="skills-grid">
+          <div class="skills-bars">
+            <div class="skill reveal" data-delay="0">
+              <div class="skill-top"><span>HTML5 &amp; CSS3</span><span>95%</span></div>
+              <div class="skill-track"><div class="skill-fill" data-pct="95"></div></div>
+            </div>
+            <div class="skill reveal" data-delay="1">
+              <div class="skill-top"><span>JavaScript</span><span>90%</span></div>
+              <div class="skill-track"><div class="skill-fill" data-pct="90"></div></div>
+            </div>
+            <div class="skill reveal" data-delay="2">
+              <div class="skill-top"><span>React</span><span>80%</span></div>
+              <div class="skill-track"><div class="skill-fill" data-pct="80"></div></div>
+            </div>
+            <div class="skill reveal" data-delay="3">
+              <div class="skill-top"><span>UI/UX (Figma)</span><span>88%</span></div>
+              <div class="skill-track"><div class="skill-fill" data-pct="88"></div></div>
+            </div>
+            <div class="skill reveal" data-delay="4">
+              <div class="skill-top"><span>Node.js</span><span>72%</span></div>
+              <div class="skill-track"><div class="skill-fill" data-pct="72"></div></div>
+            </div>
+          </div>
+
+          <div class="tech-cloud reveal" data-delay="3">
+            <span class="tech-tag">HTML</span>
+            <span class="tech-tag">CSS</span>
+            <span class="tech-tag">JavaScript</span>
+            <span class="tech-tag">TypeScript</span>
+            <span class="tech-tag">React</span>
+            <span class="tech-tag">Next.js</span>
+            <span class="tech-tag">Node.js</span>
+            <span class="tech-tag">Figma</span>
+            <span class="tech-tag">Tailwind CSS</span>
+            <span class="tech-tag">Git</span>
+            <span class="tech-tag">GSAP</span>
+            <span class="tech-tag">WordPress</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== WORK ===================== -->
+    <section class="section section-alt" id="work">
+      <div class="container">
+        <div class="section-head">
+          <p class="section-tag reveal">Selected work</p>
+          <h2 class="reveal" data-delay="1">Recent <span class="gradient-text">projects</span></h2>
+          <p class="section-note reveal" data-delay="2">
+            Real, live projects — click any title to open it. Scroll, drag, or
+            focus the wheel and use the arrow keys to spin through.
+          </p>
+        </div>
+
+        <div class="wheel-wrap reveal" data-delay="0">
+          <div
+            class="wheel-stage"
+            id="wheelStage"
+            tabindex="0"
+            role="listbox"
+            aria-label="Selected work — scroll, drag, or use arrow keys to turn"
+          >
+            <div class="wheel" id="wheel"></div>
+          </div>
+
+          <div class="wheel-label" id="wheelLabel">Works '26</div>
+          <div class="wheel-title" id="wheelTitle" aria-live="polite"></div>
+          <ol class="wheel-index" id="wheelIndex"></ol>
+        </div>
+
+        <p class="section-foot reveal">
+          Want to see more? <a href="#contact" class="text-link" data-cursor="link">Reach out</a> and I'll send my full case studies.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== CONTACT ===================== -->
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="contact-card reveal">
+          <div class="contact-info">
+            <p class="section-tag tag-gradient reveal" data-delay="0">Contact</p>
+            <h2 class="reveal" data-delay="1">Let's build something <span class="gradient-text">great</span></h2>
+            <p class="contact-lead reveal" data-delay="2">
+              Got a project, a question, or just want to say hi? Drop a message below
+              or email me directly — I usually reply within a day.
+            </p>
+
+            <a href="mailto:yatharthm7@gmail.com" class="contact-mail reveal" data-delay="3" data-cursor="link">
+              <span class="mail-ico" aria-hidden="true">✉</span>
+              yatharthm7@gmail.com
+            </a>
+
+            <div class="contact-socials reveal" data-delay="4">
+              <a href="mailto:yatharthm7@gmail.com" aria-label="Email" data-cursor="link">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3 7l9 6 9-6"/></svg>
+              </a>
+              <a href="https://wa.me/919638902001" target="_blank" rel="noopener" aria-label="WhatsApp" data-cursor="link">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.13h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.36c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43-.14-.01-.31-.01-.48-.01a.92.92 0 0 0-.66.31c-.23.25-.87.85-.87 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29z"/></svg>
+              </a>
+              <a href="https://github.com/yatharthm7-cpu" target="_blank" rel="noopener" aria-label="GitHub" data-cursor="link">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.88 1.52 2.34 1.08 2.9.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.9-1.29 2.74-1.02 2.74-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.86v2.75c0 .27.18.59.69.48A10 10 0 0 0 12 2z"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <form class="contact-form" id="contactForm" novalidate>
+            <h3 class="reveal" data-delay="1">Send a message</h3>
+            <div class="field reveal" data-delay="2">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" placeholder="Your name" autocomplete="name" required />
+              <span class="err" data-for="name">Please enter your name.</span>
+            </div>
+            <div class="field reveal" data-delay="3">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+              <span class="err" data-for="email">Please enter a valid email.</span>
+            </div>
+            <div class="field reveal" data-delay="4">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" rows="4" placeholder="Tell me about your project…" required></textarea>
+              <span class="err" data-for="message">Please write a short message.</span>
+            </div>
+            <button type="submit" class="btn btn-accent btn-block reveal" data-delay="5" data-cursor="link">Send message</button>
+            <p class="form-foot" id="formFoot" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a href="#home" class="brand brand-footer" data-cursor="link">
+        <span class="brand-mark" aria-hidden="true">YM</span>
+        <span class="brand-text">Yatharth<span class="brand-dot">.</span></span>
+      </a>
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="#home" data-cursor="link">Home</a>
+        <a href="#about" data-cursor="link">About</a>
+        <a href="#services" data-cursor="link">Services</a>
+        <a href="#skills" data-cursor="link">Skills</a>
+        <a href="#work" data-cursor="link">Work</a>
+        <a href="#contact" data-cursor="link">Contact</a>
+      </nav>
+    </div>
+    <div class="footer-bar">
+      <div class="container">
+        <p>&copy; <span id="year">2026</span> Yatharth Rupesh Mehta. All rights reserved.</p>
+        <p>Designed &amp; built with <span class="gradient-text">♥</span></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top -->
+  <a href="#home" class="to-top" id="toTop" aria-label="Back to top" data-cursor="link">↑</a>
+
+  <script src="wheel.js"></script>
+  <script src="scroll-show.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
