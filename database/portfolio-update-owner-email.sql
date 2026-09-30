@@ -1,9 +1,32 @@
--- Point portfolio ownership at the new business email.
--- Run once in the Supabase SQL Editor. Safe to re-run: each policy is dropped
--- before it is recreated, so no "already exists" error.
--- This does not create or change any auth user — see database/README.md.
-
+-- Create the portfolio content schema. Run once in the Supabase SQL Editor.
+-- Applies to a dedicated Supabase project, not Tapvora's database.
 begin;
+
+create table if not exists public.portfolio_entries (
+  id uuid primary key default gen_random_uuid(),
+  source_key text unique,
+  kind text not null check (kind in ('project', 'service')),
+  title text not null check (length(title) between 1 and 100),
+  subtitle text not null default '' check (length(subtitle) <= 60),
+  description text not null default '' check (length(description) <= 500),
+  details jsonb not null default '{}'::jsonb check (jsonb_typeof(details) = 'object'),
+  image_url text,
+  link_url text,
+  link_label text not null default '' check (length(link_label) <= 50),
+  sort_order integer not null default 1 check (sort_order between 1 and 999),
+  published boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists portfolio_entries_public_order on public.portfolio_entries (kind, sort_order)
+  where published = true;
+
+alter table public.portfolio_entries enable row level security;
+
+grant usage on schema public to anon, authenticated;
+grant select on public.portfolio_entries to anon;
+grant select, insert, update, delete on public.portfolio_entries to authenticated;
 
 drop policy if exists "Published entries or owner drafts can be read" on public.portfolio_entries;
 drop policy if exists "Owner can create portfolio entries" on public.portfolio_entries;
@@ -27,6 +50,11 @@ create policy "Owner can update portfolio entries"
 create policy "Owner can remove portfolio entries"
   on public.portfolio_entries for delete to authenticated
   using (((select auth.jwt())->>'email') = 'yatharth@scaleupbiz.co.in');
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('portfolio-images', 'portfolio-images', true, 5242880,
+  array['image/jpeg', 'image/png', 'image/webp'])
+on conflict (id) do nothing;
 
 create policy "Owner can upload project images"
   on storage.objects for insert to authenticated
