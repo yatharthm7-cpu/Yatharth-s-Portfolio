@@ -1,4 +1,4 @@
-// Dependency-free regression checks. Mailto navigation is captured, never opened.
+// Dependency-free regression checks for the static portfolio.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
@@ -17,26 +17,35 @@ assert.deepEqual([...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(m => m
 assert(!/bgCanvas|roleRotator|wheelStage|skill-fill|21 November|scroll-show\.js/.test(html + source));
 for (const match of html.matchAll(/(?:src|href)="(assets\/[^"]+)"/g)) assert(fs.existsSync(path.join(root, match[1])), match[1]);
 assert.match(html, /type="email"/);
-assert.match(html, /Continue in email/);
+assert.match(html, /action="https:\/\/formspree\.io\/f\/[a-zA-Z0-9]+" method="post"/);
+assert.match(html, /Send message/);
+assert.match(html, /name="_gotcha"/);
+assert(!/Continue in email/.test(html));
 
 function element() {
   const classes = new Set();
   return {
     listeners: {}, attributes: {}, value: '', textContent: '', href: '', validityMessage: '',
-    classList: { add: x => classes.add(x), remove: x => classes.delete(x), contains: x => classes.has(x), toggle(x, force) { if (force === true) { classes.add(x); return true; } if (force === false || classes.has(x)) { classes.delete(x); return false; } classes.add(x); return true; } },
+    classList: { add: x => classes.add(x), remove: (...names) => names.forEach(x => classes.delete(x)), contains: x => classes.has(x), toggle(x, force) { if (force === true) { classes.add(x); return true; } if (force === false || classes.has(x)) { classes.delete(x); return false; } classes.add(x); return true; } },
     addEventListener(type, callback) { this.listeners[type] = callback; },
     setAttribute(name, value) { this.attributes[name] = value; }, getAttribute(name) { return this.attributes[name]; }, removeAttribute() {}, focus() {}, contains() { return false; }, querySelectorAll() { return []; },
     setCustomValidity(message) { this.validityMessage = message; }
   };
 }
-const ids = Object.fromEntries(['year', 'navToggle', 'navLinks', 'contactForm', 'formFoot', 'emailFallback', 'name', 'email', 'message', 'nfcStage', 'nfcJourneyCopy'].map(id => [id, element()]));
+const ids = Object.fromEntries(['year', 'navToggle', 'navLinks', 'contactForm', 'formFoot', 'sendButton', 'name', 'email', 'message', 'nfcStage', 'nfcJourneyCopy'].map(id => [id, element()]));
 const nfcSteps = ['1', '2', '3'].map(step => { const button = element(); button.setAttribute('data-nfc-step', step); return button; });
 let nativeValid = true;
 ids.contactForm.reportValidity = () => nativeValid && ['name', 'email', 'message'].every(id => !ids[id].validityMessage);
-const location = { href: '' };
+ids.contactForm.action = 'https://formspree.io/f/xzezwkeq';
+let resets = 0;
+ids.contactForm.reset = () => { resets++; };
+let accepted = true;
+const sent = [];
 vm.runInNewContext(source, {
   document: { getElementById: id => ids[id], addEventListener() {}, querySelectorAll(selector) { return selector === '[data-nfc-step]' ? nfcSteps : []; } },
-  window: { location, innerWidth: 1440, addEventListener() {} }
+  window: { innerWidth: 1440, addEventListener() {} },
+  FormData: class { constructor(form) { assert.equal(form, ids.contactForm); } },
+  fetch: async (url, options) => { sent.push({ url, options }); return { ok: accepted }; }
 });
 nfcSteps[1].listeners.click();
 assert.equal(ids.nfcStage.getAttribute('data-step'), '2');
@@ -47,25 +56,34 @@ nfcSteps[2].listeners.click();
 assert.equal(ids.nfcStage.getAttribute('data-step'), '3');
 assert.match(ids.nfcJourneyCopy.textContent, /choose whether/);
 assert.equal(nfcSteps[2].getAttribute('aria-pressed'), 'true');
-let prevented = 0;
-const submit = () => ids.contactForm.listeners.submit({ preventDefault() { prevented++; } });
-ids.name.value = '  '; ids.email.value = 'test@example.com'; ids.message.value = 'A project';
-submit(); assert.equal(location.href, '', 'Whitespace-only name must not open a draft');
-ids.name.value = 'A & B <studio>'; ids.message.value = 'Hello & thank you?\nA café website.';
-nativeValid = false; submit(); assert.equal(location.href, '', 'Native validity failure must block handoff');
-nativeValid = true; submit();
-const draft = new URL(location.href);
-assert.equal(draft.protocol, 'mailto:');
-assert.equal(draft.pathname, 'yatharthm7@gmail.com');
-assert.equal(draft.searchParams.get('subject'), 'Portfolio enquiry from A & B <studio>');
-assert.equal(draft.searchParams.get('body'), 'Hello & thank you?\nA café website.\n\nFrom: A & B <studio>\nEmail: test@example.com');
-assert.equal(ids.emailFallback.href, location.href);
-assert.match(ids.formFoot.textContent, /Nothing has been sent by this website/);
-assert(!ids.formFoot.textContent.includes('<studio>'), 'User input is never inserted into status HTML');
-ids.message.value = 'Updated scope';
-ids.contactForm.listeners.input({ target: ids.message });
-assert.equal(ids.emailFallback.href, 'mailto:yatharthm7@gmail.com');
-assert.equal(ids.formFoot.textContent, '');
-submit(); assert.match(new URL(location.href).searchParams.get('body'), /^Updated scope/);
-assert.equal(prevented, 4);
-console.log('PASS: preserved project cards, section order, assets, Tapvora journey, native validation, safe draft encoding, honest status, and repeat handoff.');
+async function verifyContact() {
+  const submit = () => ids.contactForm.listeners.submit({ preventDefault() {} });
+  ids.name.value = '  ';
+  ids.email.value = 'test@example.com';
+  ids.message.value = 'A website project';
+  await submit();
+  assert.equal(sent.length, 0, 'Blank name blocks submission');
+  ids.name.value = 'Test visitor';
+  nativeValid = false;
+  await submit();
+  assert.equal(sent.length, 0, 'Invalid form blocks submission');
+  nativeValid = true;
+  await submit();
+  assert.equal(sent.length, 1);
+  assert.equal(sent[0].url, ids.contactForm.action);
+  assert.equal(sent[0].options.headers.Accept, 'application/json');
+  assert.equal(resets, 1);
+  assert.match(ids.formFoot.textContent, /Message received/);
+  assert(ids.formFoot.classList.contains('is-success'));
+  assert.equal(ids.sendButton.disabled, false);
+  ids.contactForm.listeners.input({ target: ids.message });
+  assert.equal(ids.formFoot.textContent, '');
+  accepted = false;
+  await submit();
+  assert.equal(resets, 1, 'Failed submission retains the form');
+  assert.match(ids.formFoot.textContent, /not sent/);
+  assert(ids.formFoot.classList.contains('is-error'));
+  assert.equal(ids.sendButton.disabled, false);
+  console.log('PASS: preserved portfolio, Formspree submission, confirmation, and failure recovery.');
+}
+verifyContact().catch(error => { console.error(error); process.exitCode = 1; });

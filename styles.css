@@ -178,6 +178,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .field textarea { min-height: 140px; resize: vertical; }
 .field input::placeholder, .field textarea::placeholder { color: #93909c; }
 .form-foot { min-height: 1em; font-size: 0.8rem; margin-block: 16px; }
+.form-foot.is-success { color: #bedec8; }
+.form-foot.is-error { color: #f0b8b8; }
+.contact-form button:disabled { cursor: wait; opacity: 0.7; }
 .footer { background: #18181b; border-top: 1px solid var(--border); }
 .footer-inner, .footer-bar { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-block: 32px; flex-wrap: wrap; }
 .footer p { margin: 0; font-size: 0.8rem; }

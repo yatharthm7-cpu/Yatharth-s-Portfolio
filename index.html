@@ -288,16 +288,17 @@
             <a href="https://github.com/yatharthm7-cpu" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
           </div>
         </div>
-        <form class="contact-form" id="contactForm" action="mailto:yatharthm7@gmail.com" method="post" enctype="text/plain" aria-labelledby="form-heading" aria-describedby="email-note">
+        <form class="contact-form" id="contactForm" action="https://formspree.io/f/xzezwkeq" method="post" aria-labelledby="form-heading" aria-describedby="email-note">
           <h3 id="form-heading">Start a conversation</h3>
-          <p id="email-note" class="form-note">This opens a draft in your email application. You’ll review and send it there; this website does not send messages.</p>
+          <p id="email-note" class="form-note">Tell me about your project and I’ll reply by email. Your message is delivered through Formspree.</p>
+          <input type="hidden" name="subject" value="Portfolio enquiry from {{ name }}" />
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" hidden aria-hidden="true" />
           <div class="field"><label for="name">Your name</label><input type="text" id="name" name="name" placeholder="Your name" autocomplete="name" maxlength="100" required /></div>
           <div class="field"><label for="email">Email address</label><input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" maxlength="254" required /></div>
           <div class="field"><label for="message">About your project</label><textarea id="message" name="message" rows="4" placeholder="What do you have in mind?" maxlength="2500" required></textarea></div>
-          <button type="submit" class="btn btn-accent btn-block">Continue in email <span aria-hidden="true">↗</span></button>
+          <button type="submit" id="sendButton" class="btn btn-accent btn-block">Send message <span aria-hidden="true">↗</span></button>
           <p class="form-foot" id="formFoot" role="status" aria-live="polite"></p>
-          <p class="form-note">Prefer a direct link? <a id="emailFallback" href="mailto:yatharthm7@gmail.com" class="text-link">Email me</a> or <a href="https://wa.me/919638902001" target="_blank" rel="noopener noreferrer" class="text-link">use WhatsApp</a>.</p>
-          <noscript><p class="form-note">Please use the email or WhatsApp link above to get in touch.</p></noscript>
+          <p class="form-note">Prefer a direct link? <a href="mailto:yatharthm7@gmail.com" class="text-link">Email me</a> or <a href="https://wa.me/919638902001" target="_blank" rel="noopener noreferrer" class="text-link">use WhatsApp</a>.</p>
         </form>
       </div>
     </section>

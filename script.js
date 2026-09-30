@@ -1,4 +1,4 @@
-/* Yatharth Mehta — navigation and an explicit email-app handoff. */
+/* Yatharth Mehta — navigation, portfolio interactions, and contact form. */
 (function () {
   "use strict";
 
@@ -127,34 +127,42 @@
 
   var form = document.getElementById("contactForm");
   var foot = document.getElementById("formFoot");
-  var fallback = document.getElementById("emailFallback");
+  var sendButton = document.getElementById("sendButton");
   var fields = ["name", "email", "message"].map(function (id) { return document.getElementById(id); });
 
-  form.addEventListener("submit", function (event) {
+  form.addEventListener("submit", async function (event) {
     event.preventDefault();
+    if (sendButton.disabled) return;
     fields.forEach(function (field) {
       field.setCustomValidity(field.value.trim() ? "" : "Please complete this field.");
     });
     if (!form.reportValidity()) return;
 
-    var name = fields[0].value.trim();
-    var email = fields[1].value.trim();
-    var message = fields[2].value.trim();
-    var subject = encodeURIComponent("Portfolio enquiry from " + name);
-    var body = encodeURIComponent(message + "\n\nFrom: " + name + "\nEmail: " + email);
-    var draftUrl = "mailto:yatharthm7@gmail.com?subject=" + subject + "&body=" + body;
-    fallback.href = draftUrl;
-    fallback.textContent = "Open this email draft";
-    foot.textContent = "Your email app should open with a draft. Review and send it there. Nothing has been sent by this website.";
-    // A mailto link only hands off a draft; it cannot confirm delivery.
-    window.location.href = draftUrl;
+    sendButton.disabled = true;
+    foot.classList.remove("is-error", "is-success");
+    foot.textContent = "Sending your message…";
+    try {
+      var response = await fetch(form.action, {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: new FormData(form)
+      });
+      if (!response.ok) throw new Error("Send failed");
+      form.reset();
+      foot.classList.add("is-success");
+      foot.textContent = "Message received. I’ll reply by email.";
+    } catch {
+      foot.classList.add("is-error");
+      foot.textContent = "Your message was not sent. Please try again or use email or WhatsApp below.";
+    } finally {
+      sendButton.disabled = false;
+    }
   });
 
   form.addEventListener("input", function (event) {
     if (fields.indexOf(event.target) === -1) return;
     event.target.setCustomValidity("");
+    foot.classList.remove("is-error", "is-success");
     foot.textContent = "";
-    fallback.href = "mailto:yatharthm7@gmail.com";
-    fallback.textContent = "Email me";
   });
 })();
