@@ -62,6 +62,28 @@
   window.addEventListener("resize", highlightNav);
   highlightNav();
 
+  // Reveal supporting content once it enters view; never hide content without this observer.
+  if (typeof window.IntersectionObserver === "function" &&
+      (typeof window.matchMedia !== "function" || !window.matchMedia("(prefers-reduced-motion: reduce)").matches)) {
+    var revealTargets = Array.prototype.slice.call(document.querySelectorAll(
+      "#work .work-heading, #work .project-card-image, #services .section-head, " +
+      "#nfc .nfc-copy h2, #nfc .nfc-stage, #process .section-head, " +
+      "#process .process-grid li, #about .about-art, #about .about-copy h2, #contact .contact-card h2"
+    ));
+    var revealObserver = new window.IntersectionObserver(function (entries, observer) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.08, rootMargin: "0px 0px -6% 0px" });
+    revealTargets.forEach(function (target) {
+      target.classList.add("motion-reveal");
+      revealObserver.observe(target);
+    });
+    document.documentElement.classList.add("motion-ready");
+  }
+
   var nfcStage = document.getElementById("nfcStage");
   var nfcCopy = document.getElementById("nfcJourneyCopy");
   var nfcSteps = Array.prototype.slice.call(document.querySelectorAll("[data-nfc-step]"));

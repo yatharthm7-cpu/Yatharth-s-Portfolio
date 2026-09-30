@@ -318,6 +318,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .nfc-phone { display: none; }
   .nfc-step { font-size: 0.67rem; }
 }
+/* One-time entrances support the content without adding continuous motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .motion-ready .motion-reveal { opacity: 0; transform: translate3d(0, 16px, 0); transition: opacity 0.6s ease, transform 0.6s var(--ease); transition-delay: var(--reveal-delay, 0ms); }
+  .motion-ready .motion-reveal.is-visible { opacity: 1; transform: none; }
+  .process-grid li:nth-child(2) { --reveal-delay: 65ms; }
+  .process-grid li:nth-child(3) { --reveal-delay: 130ms; }
+  .process-grid li:nth-child(4) { --reveal-delay: 195ms; }
+}
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
