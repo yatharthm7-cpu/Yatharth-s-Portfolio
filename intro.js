@@ -1,4 +1,4 @@
-/* The opening scene fades as normal document scrolling reaches the portfolio. */
+/* Scroll distance opens the entrance; normal document scrolling reveals the site. */
 (function () {
   "use strict";
 
@@ -6,8 +6,9 @@
   var spacer = document.querySelector(".intro-scroll");
   if (!intro || !spacer || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  var media = intro.querySelector(".intro-media");
-  var content = intro.querySelector(".intro-content");
+  var left = intro.querySelector(".intro-panel-left");
+  var right = intro.querySelector(".intro-panel-right");
+  var copy = intro.querySelector(".intro-copy");
   var top = intro.querySelector(".intro-topline");
   var bottom = intro.querySelector(".intro-bottomline");
   var bar = intro.querySelector(".intro-progress");
@@ -20,16 +21,17 @@
     scheduled = false;
     var distance = spacer.getBoundingClientRect().height || window.innerHeight;
     var progress = clamp(window.scrollY / distance, 0, 1);
-    var textOpacity = 1 - clamp((progress - 0.55) / 0.38, 0, 1);
-    var overlayOpacity = 1 - clamp((progress - 0.72) / 0.28, 0, 1);
+    var opening = clamp((progress - 0.05) / 0.7, 0, 1);
+    var curtainShift = (opening * 102).toFixed(2) + "%";
+    var textOpacity = clamp(1 - progress / 0.42, 0, 1);
 
-    media.style.transform = "scale(" + (1 + progress * 0.06).toFixed(3) + ")";
-    content.style.transform = "translateY(-" + (progress * 30).toFixed(1) + "px)";
-    content.style.opacity = String(textOpacity);
+    left.style.transform = "translateX(-" + curtainShift + ")";
+    right.style.transform = "translateX(" + curtainShift + ")";
+    copy.style.opacity = String(textOpacity);
     top.style.opacity = String(textOpacity);
     bottom.style.opacity = String(textOpacity);
     bar.style.transform = "scaleX(" + progress.toFixed(3) + ")";
-    intro.style.opacity = String(overlayOpacity);
+    intro.style.opacity = String(clamp((1 - progress) / 0.22, 0, 1));
     intro.style.pointerEvents = progress >= 0.95 ? "none" : "auto";
     intro.inert = progress >= 0.95;
     coveredContent.forEach(function (element) { element.inert = progress < 0.95; });
