@@ -7,7 +7,7 @@ Completed 2026-09-30 in the existing HTML/CSS/JavaScript stack.
 - Selected Work markup and shared card styles remain unchanged from the completed card update. The original project links and real website screenshots are preserved.
 - Section order: Hero, Selected Work, Services, Tapvora, Process, About, Contact.
 - Removed orbit, particles, typing, skill percentages, birthday details and continuous reveal effects. Motion respects reduced-motion preferences.
-- The contact form sends enquiries to Formspree and shows a confirmation only after the service accepts the submission. The Formspree form must be connected to the verified inbox `yatharthm7@gmail.com`; the email and WhatsApp links remain available.
+- The contact form sends enquiries to Formspree and shows a confirmation only after the service accepts the submission. The Formspree form must be connected to the verified inbox `yatharth@scaleupbiz.co.in`; the email and WhatsApp links remain available.
 
 ## Verification
 

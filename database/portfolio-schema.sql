@@ -27,20 +27,20 @@ grant select, insert, update, delete on public.portfolio_entries to authenticate
 
 create policy "Published entries or owner drafts can be read"
   on public.portfolio_entries for select to anon, authenticated
-  using (published = true or ((select auth.jwt())->>'email') = 'yatharthm7@gmail.com');
+  using (published = true or ((select auth.jwt())->>'email') = 'yatharth@scaleupbiz.co.in');
 
 create policy "Owner can create portfolio entries"
   on public.portfolio_entries for insert to authenticated
-  with check (((select auth.jwt())->>'email') = 'yatharthm7@gmail.com');
+  with check (((select auth.jwt())->>'email') = 'yatharth@scaleupbiz.co.in');
 
 create policy "Owner can update portfolio entries"
   on public.portfolio_entries for update to authenticated
-  using (((select auth.jwt())->>'email') = 'yatharthm7@gmail.com')
-  with check (((select auth.jwt())->>'email') = 'yatharthm7@gmail.com');
+  using (((select auth.jwt())->>'email') = 'yatharth@scaleupbiz.co.in')
+  with check (((select auth.jwt())->>'email') = 'yatharth@scaleupbiz.co.in');
 
 create policy "Owner can remove portfolio entries"
   on public.portfolio_entries for delete to authenticated
-  using (((select auth.jwt())->>'email') = 'yatharthm7@gmail.com');
+  using (((select auth.jwt())->>'email') = 'yatharth@scaleupbiz.co.in');
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('portfolio-images', 'portfolio-images', true, 5242880,
@@ -51,5 +51,5 @@ create policy "Owner can upload project images"
   with check (
     bucket_id = 'portfolio-images'
     and (storage.foldername(name))[1] = 'projects'
-    and ((select auth.jwt())->>'email') = 'yatharthm7@gmail.com'
+    and ((select auth.jwt())->>'email') = 'yatharth@scaleupbiz.co.in'
   );

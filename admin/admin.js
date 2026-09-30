@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var OWNER_EMAIL = "yatharthm7@gmail.com";
+  var OWNER_EMAIL = "yatharth@scaleupbiz.co.in";
   var config = window.PORTFOLIO_CONTENT_CONFIG;
   var status = document.getElementById("adminStatus");
   var loginPanel = document.getElementById("loginPanel");
