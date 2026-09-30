@@ -50,6 +50,42 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .text-link:hover { color: var(--text); }
 .skip-link { position: fixed; z-index: 200; left: 20px; top: -100px; background: var(--text); color: var(--bg); padding: 12px 20px; border-radius: 6px; }
 .skip-link:focus { top: 10px; }
+/* Scroll entrance: the split cover opens to the existing portfolio. */
+.intro-scroll, .intro-overlay { display: none; }
+.intro-ready .intro-scroll { display: block; height: 100svh; height: 100dvh; }
+.intro-ready .intro-overlay {
+  display: block; position: fixed; inset: 0; z-index: 150; overflow: hidden;
+  color: #f3f0e9; background: transparent;
+}
+.intro-panel { position: absolute; top: 0; bottom: 0; width: 50.1%; background: #111114; will-change: transform; }
+.intro-panel-left { left: 0; border-right: 1px solid #6d6079; background-image: radial-gradient(circle at 85% 65%, #33293d 0, #17151c 48%, #111114 85%); }
+.intro-panel-right { right: 0; border-left: 1px solid #6d6079; background-image: radial-gradient(circle at 15% 65%, #33293d 0, #17151c 48%, #111114 85%); }
+.intro-topline, .intro-bottomline { position: absolute; z-index: 2; left: clamp(22px, 4vw, 72px); right: clamp(22px, 4vw, 72px); display: flex; justify-content: space-between; gap: 16px; align-items: center; font: 500 0.7rem/1.4 var(--font-mono); letter-spacing: 0.12em; }
+.intro-topline { top: clamp(24px, 4vw, 52px); }
+.intro-bottomline { bottom: clamp(30px, 5vw, 56px); }
+.intro-copy { position: absolute; z-index: 2; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 9vw 24px; pointer-events: none; }
+.intro-kicker { color: #c0b4ce; font: 500 clamp(0.65rem, 1vw, 0.85rem)/1.5 var(--font-mono); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; }
+.intro-title { color: #f3f0e9; font: 600 clamp(3.6rem, 13.5vw, 13rem)/0.84 var(--font-display); letter-spacing: -0.085em; margin: 0; white-space: nowrap; }
+.intro-star { display: inline-block; vertical-align: top; color: var(--accent); font-size: 0.21em; line-height: 1; letter-spacing: 0; margin-left: 0.1em; transform: translateY(0.1em); }
+.intro-summary { color: #e3dfe8; font: 400 clamp(0.95rem, 1.5vw, 1.3rem)/1.4 var(--font); margin: 28px 0 0; }
+.intro-bottomline > span { color: #d9cde5; }
+.intro-arrow { display: inline-block; margin-left: 8px; font-size: 1.1rem; animation: intro-nudge 1.8s ease-in-out infinite; }
+.intro-skip { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 14px; border: 1px solid #8f7da4; border-radius: 999px; background: #17131dcf; color: #f3f0e9; font-family: var(--font); font-size: 0.84rem; letter-spacing: 0; pointer-events: auto; }
+.intro-skip:hover { background: #3a2e45; color: #fff; }
+.intro-progress { position: absolute; z-index: 2; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--accent); transform: scaleX(0); transform-origin: left; }
+@keyframes intro-nudge { 50% { transform: translateY(5px); } }
+@media (max-width: 600px) {
+  .intro-topline span:last-child { display: none; }
+  .intro-kicker { max-width: 32ch; }
+  .intro-title { font-size: clamp(2.8rem, 13.5vw, 5rem); }
+  .intro-summary { margin-top: 20px; }
+  .intro-bottomline { font-size: 0.6rem; }
+  .intro-skip { font-size: 0.75rem; padding-inline: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-ready .intro-scroll, .intro-ready .intro-overlay { display: none; }
+  .intro-arrow { animation: none; }
+}
 /* Minimalist Hero: portrait + circle, generous typography, quiet navigation. */
 .navbar { position: sticky; top: 0; z-index: 100; background: rgba(20,20,22,0.97); border-bottom: 1px solid #303035; }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 84px; }
