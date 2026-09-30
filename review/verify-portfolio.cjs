@@ -1,4 +1,4 @@
-// Dependency-free regression checks for the static portfolio.
+// Dependency-free regression checks. Mailto navigation is captured, never opened.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
@@ -17,13 +17,7 @@ assert.deepEqual([...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(m => m
 assert(!/bgCanvas|roleRotator|wheelStage|skill-fill|21 November|scroll-show\.js/.test(html + source));
 for (const match of html.matchAll(/(?:src|href)="(assets\/[^"]+)"/g)) assert(fs.existsSync(path.join(root, match[1])), match[1]);
 assert.match(html, /type="email"/);
-assert.match(html, /action="https:\/\/formsubmit\.co\/yatharthm7@gmail\.com" method="POST"/);
-assert.match(html, /name="_next" value="https:\/\/midcurve-five\.vercel\.app\/thank-you\.html"/);
-assert.match(html, /name="_honey"/);
-assert.match(html, /Send message/);
-assert(!/Continue in email/.test(html));
-assert(fs.existsSync(path.join(root, 'thank-you.html')));
-assert.match(fs.readFileSync(path.join(root, 'thank-you.html'), 'utf8'), /Form submitted/);
+assert.match(html, /Continue in email/);
 
 function element() {
   const classes = new Set();
@@ -35,11 +29,14 @@ function element() {
     setCustomValidity(message) { this.validityMessage = message; }
   };
 }
-const ids = Object.fromEntries(['year', 'navToggle', 'navLinks', 'nfcStage', 'nfcJourneyCopy'].map(id => [id, element()]));
+const ids = Object.fromEntries(['year', 'navToggle', 'navLinks', 'contactForm', 'formFoot', 'emailFallback', 'name', 'email', 'message', 'nfcStage', 'nfcJourneyCopy'].map(id => [id, element()]));
 const nfcSteps = ['1', '2', '3'].map(step => { const button = element(); button.setAttribute('data-nfc-step', step); return button; });
+let nativeValid = true;
+ids.contactForm.reportValidity = () => nativeValid && ['name', 'email', 'message'].every(id => !ids[id].validityMessage);
+const location = { href: '' };
 vm.runInNewContext(source, {
   document: { getElementById: id => ids[id], addEventListener() {}, querySelectorAll(selector) { return selector === '[data-nfc-step]' ? nfcSteps : []; } },
-  window: { innerWidth: 1440, addEventListener() {} }
+  window: { location, innerWidth: 1440, addEventListener() {} }
 });
 nfcSteps[1].listeners.click();
 assert.equal(ids.nfcStage.getAttribute('data-step'), '2');
@@ -50,4 +47,25 @@ nfcSteps[2].listeners.click();
 assert.equal(ids.nfcStage.getAttribute('data-step'), '3');
 assert.match(ids.nfcJourneyCopy.textContent, /choose whether/);
 assert.equal(nfcSteps[2].getAttribute('aria-pressed'), 'true');
-console.log('PASS: preserved project cards, section order, assets, Tapvora journey, contact endpoint, and confirmation page.');
+let prevented = 0;
+const submit = () => ids.contactForm.listeners.submit({ preventDefault() { prevented++; } });
+ids.name.value = '  '; ids.email.value = 'test@example.com'; ids.message.value = 'A project';
+submit(); assert.equal(location.href, '', 'Whitespace-only name must not open a draft');
+ids.name.value = 'A & B <studio>'; ids.message.value = 'Hello & thank you?\nA café website.';
+nativeValid = false; submit(); assert.equal(location.href, '', 'Native validity failure must block handoff');
+nativeValid = true; submit();
+const draft = new URL(location.href);
+assert.equal(draft.protocol, 'mailto:');
+assert.equal(draft.pathname, 'yatharthm7@gmail.com');
+assert.equal(draft.searchParams.get('subject'), 'Portfolio enquiry from A & B <studio>');
+assert.equal(draft.searchParams.get('body'), 'Hello & thank you?\nA café website.\n\nFrom: A & B <studio>\nEmail: test@example.com');
+assert.equal(ids.emailFallback.href, location.href);
+assert.match(ids.formFoot.textContent, /Nothing has been sent by this website/);
+assert(!ids.formFoot.textContent.includes('<studio>'), 'User input is never inserted into status HTML');
+ids.message.value = 'Updated scope';
+ids.contactForm.listeners.input({ target: ids.message });
+assert.equal(ids.emailFallback.href, 'mailto:yatharthm7@gmail.com');
+assert.equal(ids.formFoot.textContent, '');
+submit(); assert.match(new URL(location.href).searchParams.get('body'), /^Updated scope/);
+assert.equal(prevented, 4);
+console.log('PASS: preserved project cards, section order, assets, Tapvora journey, native validation, safe draft encoding, honest status, and repeat handoff.');

@@ -7,7 +7,7 @@ Completed 2026-09-30 in the existing HTML/CSS/JavaScript stack.
 - Selected Work markup and shared card styles remain unchanged from the completed card update. The original project links and real website screenshots are preserved.
 - Section order: Hero, Selected Work, Services, Tapvora, Process, About, Contact.
 - Removed orbit, particles, typing, skill percentages, birthday details and continuous reveal effects. Motion respects reduced-motion preferences.
-- The contact form posts to FormSubmit for delivery to Yatharth's inbox and returns to a dedicated confirmation page. FormSubmit requires recipient email activation before delivery begins; direct email and WhatsApp links remain available.
+- The contact form explicitly hands off to the user's email application; it does not claim to send messages. Email and WhatsApp destinations are preserved.
 
 ## Verification
 

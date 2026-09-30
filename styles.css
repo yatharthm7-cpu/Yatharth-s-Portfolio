@@ -178,14 +178,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .field textarea { min-height: 140px; resize: vertical; }
 .field input::placeholder, .field textarea::placeholder { color: #93909c; }
 .form-foot { min-height: 1em; font-size: 0.8rem; margin-block: 16px; }
-.form-alternative { margin: 19px 0 0; }
-.thanks-main { display: grid; align-items: center; min-height: calc(100svh - 151px); padding-block: 100px; }
-.thanks-content { max-width: 920px; }
-.thanks-content h1 { font-size: clamp(3rem, 9vw, 7.5rem); line-height: 0.99; letter-spacing: -0.075em; margin-bottom: 30px; }
-.thanks-content h1 span { color: var(--accent); }
-.thanks-content > p:not(.eyebrow) { max-width: 44ch; }
-.thanks-content .btn { margin: 18px 0 28px; }
-.thanks-content .form-note { margin: 0; }
 .footer { background: #18181b; border-top: 1px solid var(--border); }
 .footer-inner, .footer-bar { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-block: 32px; flex-wrap: wrap; }
 .footer p { margin: 0; font-size: 0.8rem; }
