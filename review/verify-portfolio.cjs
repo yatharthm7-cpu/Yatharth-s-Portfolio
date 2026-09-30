@@ -13,7 +13,7 @@ const work = html.slice(html.indexOf('    <!-- ===================== SELECTED WO
 const workCSS = css.slice(css.indexOf('/* =========================================================\n   Selected work'), css.indexOf('/* Responsive layout'));
 assert.equal(hash(work), '8c5ea3e518433e165218ed6e6718bf3bc25a5a5a67eb205a32d469267d484e9d', 'Completed work HTML must remain unchanged');
 assert.equal(hash(workCSS), '22690da151b9521e3afe74d05fd89b973901200dd182f0c4305dc4293b91e213', 'Completed work CSS must remain unchanged');
-assert.deepEqual([...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(m => m[1]), ['home', 'work', 'services', 'nfc', 'process', 'about', 'contact']);
+assert.deepEqual([...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(m => m[1]), ['home', 'work', 'services', 'nfc', 'process', 'testimonials', 'about', 'cta', 'contact']);
 assert(!/bgCanvas|roleRotator|wheelStage|skill-fill|21 November|scroll-show\.js/.test(html + source));
 for (const match of html.matchAll(/(?:src|href)="(assets\/[^"]+)"/g)) assert(fs.existsSync(path.join(root, match[1])), match[1]);
 assert.match(html, /type="email"/);

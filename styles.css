@@ -186,6 +186,33 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .footer p { margin: 0; font-size: 0.8rem; }
 .footer-bar { border-top: 1px solid var(--border); padding-block: 20px; }
 /* =========================================================
+   Testimonials — three client quotes, shared card system
+   ========================================================= */
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.testimonial-card {
+  display: flex; flex-direction: column; min-width: 0;
+  padding: 32px; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.testimonial-card blockquote {
+  flex: 1; margin: 0 0 28px; padding: 0; border: none;
+  color: var(--text); font-family: var(--font-display); font-size: 1.05rem; line-height: 1.6; letter-spacing: -0.01em;
+}
+.testimonial-card figcaption { display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--border); padding-top: 20px; }
+.testimonial-name { color: var(--text); font-size: 0.9rem; font-weight: 600; }
+.testimonial-role { color: var(--text-2); font-size: 0.8rem; }
+.testimonial-link { margin-top: 10px; color: var(--accent); font-size: 0.8rem; display: inline-flex; align-items: center; gap: 8px; min-height: 32px; }
+.testimonial-link:hover { color: var(--text); }
+
+/* =========================================================
+   CTA band — final push before the contact form
+   ========================================================= */
+.cta-band { background: #18181b; border-block: 1px solid #303035; padding: 88px 0; scroll-margin-top: 84px; }
+.cta-inner { display: flex; justify-content: space-between; align-items: center; gap: 48px; flex-wrap: wrap; }
+.cta-band h2 { font-size: clamp(2rem, 3.4vw, 3rem); margin: 0; }
+.cta-note { max-width: 46ch; margin: 18px 0 0; font-size: 0.95rem; }
+.cta-actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+
+/* =========================================================
    Selected work — Project Card by ravikatiyar162 (21st.dev/5964)
    Shared vanilla CSS adaptation: image, content, contribution, CTA.
    ========================================================= */
@@ -279,6 +306,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .service-card h3 { font-size: 1.4rem; }
   .nfc-grid, .contact-card, .about-inner { gap: 48px; }
   .process-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 36px; }
+  .testimonials-grid { grid-template-columns: 1fr; max-width: 660px; margin-inline: auto; }
+  .cta-inner { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 860px) {
   .nav-inner { min-height: 72px; }
@@ -312,6 +341,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .process-grid { grid-template-columns: 1fr; }
   .nfc-art { padding: 14px; }
   .contact-form { padding: 22px; }
+  .testimonial-card { padding: 26px; }
+  .cta-band { padding: 64px 0; }
+  .cta-actions { width: 100%; }
+  .cta-actions .btn { flex: 1 1 auto; }
   .contact-mail { gap: 8px; }
   .footer-inner { align-items: flex-start; flex-direction: column; gap: 12px; }
 }
@@ -328,6 +361,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .process-grid li:nth-child(2) { --reveal-delay: 65ms; }
   .process-grid li:nth-child(3) { --reveal-delay: 130ms; }
   .process-grid li:nth-child(4) { --reveal-delay: 195ms; }
+  .testimonial-card:nth-child(2) { --reveal-delay: 65ms; }
+  .testimonial-card:nth-child(3) { --reveal-delay: 130ms; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
