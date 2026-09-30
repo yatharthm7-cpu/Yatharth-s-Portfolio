@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Portfolio Admin — Yatharth Mehta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <a class="skip-link" href="#adminMain">Skip to editor</a>
+  <header class="admin-header">
+    <a class="brand" href="/">Yatharth<span>.</span></a>
+    <span class="admin-header-label">Portfolio admin</span>
+    <div class="admin-header-actions">
+      <a class="admin-site-link" href="/" target="_blank" rel="noopener noreferrer">View site ↗</a>
+      <button type="button" id="signOut" class="admin-quiet" hidden>Sign out</button>
+    </div>
+  </header>
+
+  <main id="adminMain" class="admin-main">
+    <section id="loginPanel" class="admin-login" aria-labelledby="loginTitle">
+      <p class="eyebrow">Private workspace</p>
+      <h1 id="loginTitle">Keep your portfolio<br /><span>current.</span></h1>
+      <p>Add projects and services here. Published changes appear on your website without a GitHub edit.</p>
+      <form id="loginForm">
+        <label for="loginEmail">Owner email</label>
+        <input id="loginEmail" type="email" value="yatharthm7@gmail.com" autocomplete="email" required />
+        <button class="btn btn-accent" type="submit" id="loginButton">Email me a sign-in link ↗</button>
+      </form>
+      <p class="admin-note">Only the verified owner account can save changes. A sign-in link will arrive in your inbox.</p>
+    </section>
+
+    <section id="editorPanel" class="admin-editor" hidden aria-labelledby="editorTitle">
+      <div class="admin-intro">
+        <div>
+          <p class="eyebrow">Content desk</p>
+          <h1 id="editorTitle">Projects &amp; services<span>.</span></h1>
+          <p>Write clearly, add a strong image, and publish when the entry is ready. Saved drafts stay off the public site.</p>
+        </div>
+        <div class="admin-owner">Signed in as <strong id="signedInEmail"></strong></div>
+      </div>
+
+      <div class="admin-layout">
+        <aside class="admin-sidebar" aria-label="Content list">
+          <div class="admin-tabs" role="tablist" aria-label="Content type">
+            <button type="button" id="projectsTab" role="tab" aria-selected="true" data-kind="project">Projects <span id="projectCount">0</span></button>
+            <button type="button" id="servicesTab" role="tab" aria-selected="false" data-kind="service">Services <span id="serviceCount">0</span></button>
+          </div>
+          <div class="admin-sidebar-head"><h2 id="listHeading">Projects</h2><button type="button" id="addEntry" class="admin-add">+ Add new</button></div>
+          <div id="entryList" class="admin-list"></div>
+          <p class="admin-note">Use the order number to place entries on the public page. Drafts are visible only here.</p>
+        </aside>
+
+        <section class="admin-form-panel" aria-labelledby="formTitle">
+          <div class="admin-form-head"><p class="eyebrow" id="formEyebrow">Project editor</p><h2 id="formTitle">New project</h2></div>
+          <form id="entryForm" autocomplete="off">
+            <input type="hidden" id="entryId" />
+            <div class="admin-field-row">
+              <label class="admin-field">Title <input id="entryTitle" type="text" maxlength="100" required placeholder="Project or service name" /></label>
+              <label class="admin-field">Category / label <input id="entrySubtitle" type="text" maxlength="60" placeholder="Restaurant website" /></label>
+            </div>
+            <label class="admin-field">Description <textarea id="entryDescription" rows="4" maxlength="500" required placeholder="What did you build, and why does it matter?"></textarea></label>
+
+            <div id="projectFields">
+              <label class="admin-field">My contribution <input id="entryContribution" type="text" maxlength="120" placeholder="Complete website build" /></label>
+              <label class="admin-field">Project screenshot URL <input id="entryImageUrl" type="text" placeholder="https://… or existing assets/ image" /></label>
+              <label class="admin-field">Or upload a screenshot <input id="entryImageFile" type="file" accept="image/jpeg,image/png,image/webp" /><small>JPG, PNG or WebP, up to 5 MB. A new upload replaces the screenshot URL above.</small></label>
+              <label class="admin-field">Image description <input id="entryImageAlt" type="text" maxlength="160" placeholder="Homepage screenshot of…" /></label>
+            </div>
+
+            <div id="serviceFields" hidden>
+              <label class="admin-field">Deliverables <textarea id="entryBullets" rows="4" placeholder="One deliverable per line"></textarea><small>Keep these concrete. Three short lines usually read best.</small></label>
+            </div>
+
+            <div class="admin-field-row">
+              <label class="admin-field">Link URL <input id="entryLinkUrl" type="text" placeholder="https://… or #contact" /></label>
+              <label class="admin-field">Link text <input id="entryLinkLabel" type="text" maxlength="50" placeholder="View project" /></label>
+            </div>
+            <div class="admin-publish-row">
+              <label class="admin-field admin-order">Display order <input id="entryOrder" type="number" min="1" max="999" value="1" required /></label>
+              <label class="admin-switch"><input id="entryPublished" type="checkbox" /><span>Published on the website</span></label>
+            </div>
+            <div class="admin-form-actions">
+              <button class="btn btn-accent" id="saveEntry" type="submit">Save entry ↗</button>
+              <button class="admin-quiet" id="resetEntry" type="button">Clear form</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </section>
+    <p id="adminStatus" class="admin-status" role="status" aria-live="polite"></p>
+  </main>
+
+  <script src="../content-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1" defer></script>
+  <script src="admin.js" defer></script>
+</body>
+</html>

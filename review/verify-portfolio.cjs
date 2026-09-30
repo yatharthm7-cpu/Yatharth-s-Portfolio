@@ -21,6 +21,8 @@ assert.match(html, /action="https:\/\/formspree\.io\/f\/[a-zA-Z0-9]+" method="po
 assert.match(html, /Send message/);
 assert.match(html, /name="_gotcha"/);
 assert(!/Continue in email/.test(html));
+assert.match(html, /src="content-config\.js"/);
+assert.match(html, /src="portfolio-content\.js"/);
 
 function element() {
   const classes = new Set();
