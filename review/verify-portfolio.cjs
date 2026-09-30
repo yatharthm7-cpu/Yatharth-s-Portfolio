@@ -22,21 +22,31 @@ assert.match(html, /Continue in email/);
 function element() {
   const classes = new Set();
   return {
-    listeners: {}, value: '', textContent: '', href: '', validityMessage: '',
-    classList: { add: x => classes.add(x), remove: x => classes.delete(x), contains: x => classes.has(x), toggle(x) { if (classes.has(x)) { classes.delete(x); return false; } classes.add(x); return true; } },
+    listeners: {}, attributes: {}, value: '', textContent: '', href: '', validityMessage: '',
+    classList: { add: x => classes.add(x), remove: x => classes.delete(x), contains: x => classes.has(x), toggle(x, force) { if (force === true) { classes.add(x); return true; } if (force === false || classes.has(x)) { classes.delete(x); return false; } classes.add(x); return true; } },
     addEventListener(type, callback) { this.listeners[type] = callback; },
-    setAttribute() {}, removeAttribute() {}, focus() {}, contains() { return false; }, querySelectorAll() { return []; },
+    setAttribute(name, value) { this.attributes[name] = value; }, getAttribute(name) { return this.attributes[name]; }, removeAttribute() {}, focus() {}, contains() { return false; }, querySelectorAll() { return []; },
     setCustomValidity(message) { this.validityMessage = message; }
   };
 }
-const ids = Object.fromEntries(['year', 'navToggle', 'navLinks', 'contactForm', 'formFoot', 'emailFallback', 'name', 'email', 'message'].map(id => [id, element()]));
+const ids = Object.fromEntries(['year', 'navToggle', 'navLinks', 'contactForm', 'formFoot', 'emailFallback', 'name', 'email', 'message', 'nfcStage', 'nfcJourneyCopy'].map(id => [id, element()]));
+const nfcSteps = ['1', '2', '3'].map(step => { const button = element(); button.setAttribute('data-nfc-step', step); return button; });
 let nativeValid = true;
 ids.contactForm.reportValidity = () => nativeValid && ['name', 'email', 'message'].every(id => !ids[id].validityMessage);
 const location = { href: '' };
 vm.runInNewContext(source, {
-  document: { getElementById: id => ids[id], addEventListener() {}, querySelectorAll() { return []; } },
+  document: { getElementById: id => ids[id], addEventListener() {}, querySelectorAll(selector) { return selector === '[data-nfc-step]' ? nfcSteps : []; } },
   window: { location, innerWidth: 1440, addEventListener() {} }
 });
+nfcSteps[1].listeners.click();
+assert.equal(ids.nfcStage.getAttribute('data-step'), '2');
+assert.match(ids.nfcJourneyCopy.textContent, /Google review page/);
+assert.equal(nfcSteps[1].getAttribute('aria-pressed'), 'true');
+assert.equal(nfcSteps[0].getAttribute('aria-pressed'), 'false');
+nfcSteps[2].listeners.click();
+assert.equal(ids.nfcStage.getAttribute('data-step'), '3');
+assert.match(ids.nfcJourneyCopy.textContent, /choose whether/);
+assert.equal(nfcSteps[2].getAttribute('aria-pressed'), 'true');
 let prevented = 0;
 const submit = () => ids.contactForm.listeners.submit({ preventDefault() { prevented++; } });
 ids.name.value = '  '; ids.email.value = 'test@example.com'; ids.message.value = 'A project';
@@ -58,4 +68,4 @@ assert.equal(ids.emailFallback.href, 'mailto:yatharthm7@gmail.com');
 assert.equal(ids.formFoot.textContent, '');
 submit(); assert.match(new URL(location.href).searchParams.get('body'), /^Updated scope/);
 assert.equal(prevented, 4);
-console.log('PASS: preserved project cards, section order, assets, removed effects, native validation, safe draft encoding, honest status, and repeat handoff.');
+console.log('PASS: preserved project cards, section order, assets, Tapvora journey, native validation, safe draft encoding, honest status, and repeat handoff.');

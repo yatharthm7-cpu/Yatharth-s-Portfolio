@@ -219,8 +219,31 @@
           </div>
         </div>
         <figure class="nfc-art">
-          <div class="nfc-card"><img src="assets/tapvora-card.png" alt="Tapvora NFC and QR review card artwork" width="1004" height="638" loading="lazy" decoding="async" /></div>
-          <figcaption><span>Tap. Scan. Connect.</span><span>NFC + QR</span></figcaption>
+          <div class="nfc-stage" id="nfcStage" data-step="1">
+            <div class="nfc-stage-light" aria-hidden="true"></div>
+            <div class="nfc-card">
+              <div class="nfc-card-face"><img src="assets/tapvora-card.png" alt="Tapvora NFC and QR review card artwork" width="1004" height="638" loading="lazy" decoding="async" /></div>
+            </div>
+            <div class="nfc-phone" aria-hidden="true">
+              <div class="nfc-phone-speaker"></div>
+              <div class="nfc-phone-screen">
+                <span class="nfc-phone-label">REVIEW DESTINATION</span>
+                <span class="nfc-phone-icon">↗</span>
+                <strong class="nfc-phone-step-two">One tap.<br />The right page.</strong>
+                <strong class="nfc-phone-step-three">Their words.<br />Their choice.</strong>
+                <span class="nfc-phone-line"></span>
+                <span class="nfc-phone-line short"></span>
+                <span class="nfc-phone-action">Customer decides what to share</span>
+              </div>
+            </div>
+          </div>
+          <figcaption><span>See how the card works</span><span>NFC + QR</span></figcaption>
+          <div class="nfc-journey" role="group" aria-label="Tapvora customer journey">
+            <button type="button" class="nfc-step is-active" data-nfc-step="1" aria-pressed="true"><span>01</span> Tap or scan</button>
+            <button type="button" class="nfc-step" data-nfc-step="2" aria-pressed="false"><span>02</span> Open the link</button>
+            <button type="button" class="nfc-step" data-nfc-step="3" aria-pressed="false"><span>03</span> Choose to review</button>
+          </div>
+          <p class="nfc-journey-copy" id="nfcJourneyCopy" aria-live="polite">A customer taps the card or scans its QR code with their phone.</p>
         </figure>
       </div>
     </section>

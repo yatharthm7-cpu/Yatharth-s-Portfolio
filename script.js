@@ -62,6 +62,47 @@
   window.addEventListener("resize", highlightNav);
   highlightNav();
 
+  var nfcStage = document.getElementById("nfcStage");
+  var nfcCopy = document.getElementById("nfcJourneyCopy");
+  var nfcSteps = Array.prototype.slice.call(document.querySelectorAll("[data-nfc-step]"));
+  var nfcDescriptions = {
+    "1": "A customer taps the card or scans its QR code with their phone.",
+    "2": "The phone opens the destination you have set, such as your Google review page.",
+    "3": "The customer can choose whether to leave feedback on that page."
+  };
+  nfcSteps.forEach(function (button) {
+    button.addEventListener("click", function () {
+      var step = button.getAttribute("data-nfc-step");
+      nfcStage.setAttribute("data-step", step);
+      nfcCopy.textContent = nfcDescriptions[step];
+      nfcSteps.forEach(function (item) {
+        var active = item === button;
+        item.classList.toggle("is-active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
+    });
+  });
+
+  if (typeof window.matchMedia === "function" && window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)").matches) {
+    var tiltFrame = 0;
+    nfcStage.addEventListener("pointermove", function (event) {
+      var box = nfcStage.getBoundingClientRect();
+      var x = (event.clientX - box.left) / box.width - 0.5;
+      var y = (event.clientY - box.top) / box.height - 0.5;
+      if (tiltFrame) cancelAnimationFrame(tiltFrame);
+      tiltFrame = requestAnimationFrame(function () {
+        nfcStage.style.setProperty("--card-tilt-x", (-y * 9).toFixed(2) + "deg");
+        nfcStage.style.setProperty("--card-tilt-y", (x * 11).toFixed(2) + "deg");
+        tiltFrame = 0;
+      });
+    });
+    nfcStage.addEventListener("pointerleave", function () {
+      if (tiltFrame) cancelAnimationFrame(tiltFrame);
+      nfcStage.style.removeProperty("--card-tilt-x");
+      nfcStage.style.removeProperty("--card-tilt-y");
+    });
+  }
+
   var form = document.getElementById("contactForm");
   var foot = document.getElementById("formFoot");
   var fallback = document.getElementById("emailFallback");
