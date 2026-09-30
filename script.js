@@ -1,4 +1,4 @@
-/* Yatharth Mehta — navigation and an explicit email-app handoff. */
+/* Yatharth Mehta — navigation and portfolio interactions. */
 (function () {
   "use strict";
 
@@ -125,36 +125,4 @@
     });
   }
 
-  var form = document.getElementById("contactForm");
-  var foot = document.getElementById("formFoot");
-  var fallback = document.getElementById("emailFallback");
-  var fields = ["name", "email", "message"].map(function (id) { return document.getElementById(id); });
-
-  form.addEventListener("submit", function (event) {
-    event.preventDefault();
-    fields.forEach(function (field) {
-      field.setCustomValidity(field.value.trim() ? "" : "Please complete this field.");
-    });
-    if (!form.reportValidity()) return;
-
-    var name = fields[0].value.trim();
-    var email = fields[1].value.trim();
-    var message = fields[2].value.trim();
-    var subject = encodeURIComponent("Portfolio enquiry from " + name);
-    var body = encodeURIComponent(message + "\n\nFrom: " + name + "\nEmail: " + email);
-    var draftUrl = "mailto:yatharthm7@gmail.com?subject=" + subject + "&body=" + body;
-    fallback.href = draftUrl;
-    fallback.textContent = "Open this email draft";
-    foot.textContent = "Your email app should open with a draft. Review and send it there. Nothing has been sent by this website.";
-    // A mailto link only hands off a draft; it cannot confirm delivery.
-    window.location.href = draftUrl;
-  });
-
-  form.addEventListener("input", function (event) {
-    if (fields.indexOf(event.target) === -1) return;
-    event.target.setCustomValidity("");
-    foot.textContent = "";
-    fallback.href = "mailto:yatharthm7@gmail.com";
-    fallback.textContent = "Email me";
-  });
 })();
