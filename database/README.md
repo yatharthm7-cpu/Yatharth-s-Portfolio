@@ -6,4 +6,6 @@ Open `/admin/` on the deployed portfolio and request a sign-in link for `yathart
 
 `portfolio-schema.sql` records the final schema, access policies, and image bucket configuration. `portfolio-seed.sql` contains the original three projects and three services, with stable source keys to avoid duplicates if the seed is run again. The page retains its original built-in cards if the content API is unavailable.
 
+If the owner email changes, update the five policy references here and in `admin/admin.js`, then run `portfolio-update-owner-email.sql` once in the Supabase SQL Editor. That migration only drops and recreates the policies — it does not create or change an auth user, so also add the new address under Authentication → Users before signing in with it.
+
 The database limits editing to the verified owner email through row-level security. The public client fetches published entries only. The `portfolio-images` bucket serves public portfolio images and permits uploads only from the owner. To add editable content types later, extend the table's `kind` constraint, the admin editor, and the public renderer together.
