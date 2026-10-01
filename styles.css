@@ -98,6 +98,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .nav-links .nav-cta { color: var(--text); margin-left: 10px; }
 .nav-toggle { display: none; width: 46px; height: 46px; padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: 7px; flex-direction: column; justify-content: center; gap: 5px; }
 .nav-toggle span { height: 1px; width: 20px; background: var(--text); }
+/* Circular-nav trigger: desktop shows a compact dot button; mobile reuses the hamburger. */
+.nav-dial { display: inline-flex; align-items: center; justify-content: center; gap: 5px; width: 46px; height: 46px; padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: 999px; flex-shrink: 0; transition: border-color 0.2s, background 0.2s; }
+.nav-dial span { width: 5px; height: 5px; border-radius: 50%; background: var(--text-2); transition: background 0.2s; }
+.nav-dial:hover { border-color: var(--accent); background: #26232c; }
+.nav-dial:hover span { background: var(--accent); }
+.nav-dial[aria-expanded="true"] { border-color: var(--accent); background: #26232c; }
+.nav-dial[aria-expanded="true"] span { background: var(--accent); }
 .hero { padding: 70px 0 0; scroll-margin-top: 84px; }
 .hero-inner { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); gap: 64px; align-items: center; }
 .hero h1 { font-size: clamp(2.8rem,4.5vw,4.25rem); line-height: 1.06; letter-spacing: -0.06em; margin: 0 0 28px; max-width: 13.5ch; }
@@ -312,6 +319,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 @media (max-width: 860px) {
   .nav-inner { min-height: 72px; }
   .nav-toggle { display: flex; }
+  .nav-dial { display: none; }
   .nav-links { display: none; position: absolute; top: 100%; left: 20px; right: 20px; background: #1c1c20; border: 1px solid var(--border); border-radius: 12px; padding: 16px; box-shadow: 0 20px 40px #0005; flex-direction: column; align-items: stretch; gap: 4px; }
   .nav-links.open { display: flex; }
   .nav-links > a { padding: 10px 14px; }

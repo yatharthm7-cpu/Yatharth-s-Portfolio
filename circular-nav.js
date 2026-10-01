@@ -17,8 +17,10 @@
   var dial = document.getElementById("circularDial");
   var closeButton = document.getElementById("circularClose");
   var trigger = document.getElementById("navToggle");
+  var dialTrigger = document.getElementById("navDial");
   var links = document.getElementById("navLinks");
   var isOpen = false;
+  var lastTrigger = null;
 
   if (!overlay || !dial || !trigger) return;
 
@@ -47,11 +49,13 @@
     dial.append(slot);
   });
 
-  function open() {
+  function open(source) {
     if (isOpen) return;
     isOpen = true;
     links.classList.remove("open");
     trigger.setAttribute("aria-expanded", "false");
+    if (dialTrigger) dialTrigger.setAttribute("aria-expanded", "true");
+    lastTrigger = source || trigger;
     overlay.hidden = false;
     document.documentElement.classList.add("nav-open");
     requestAnimationFrame(function () { overlay.classList.add("is-open"); });
@@ -63,18 +67,24 @@
     isOpen = false;
     overlay.classList.remove("is-open");
     document.documentElement.classList.remove("nav-open");
+    if (dialTrigger) dialTrigger.setAttribute("aria-expanded", "false");
     window.setTimeout(function () { overlay.hidden = true; }, 420);
   }
 
   trigger.addEventListener("click", function () {
-    if (isOpen) close(); else open();
+    if (isOpen) close(); else open(trigger);
   });
-  closeButton.addEventListener("click", function () { close(); trigger.focus(); });
+  if (dialTrigger) {
+    dialTrigger.addEventListener("click", function () {
+      if (isOpen) close(); else open(dialTrigger);
+    });
+  }
+  closeButton.addEventListener("click", function () { close(); lastTrigger.focus(); });
   overlay.addEventListener("click", function (event) {
     if (event.target === overlay || event.target === dial.parentElement) close();
   });
   document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape" && isOpen) { close(); trigger.focus(); }
+    if (event.key === "Escape" && isOpen) { close(); lastTrigger.focus(); }
   });
   window.addEventListener("resize", function () {
     if (window.innerWidth > 860) close();
