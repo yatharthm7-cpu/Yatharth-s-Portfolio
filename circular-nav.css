@@ -1,0 +1,74 @@
+/* Circular navigation overlay — vanilla port of Kaif UI's CircularNavigation. */
+.circular-nav {
+  position: fixed; inset: 0; z-index: 1200;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(10, 10, 14, 0);
+  opacity: 0; pointer-events: none;
+  transition: background 0.4s var(--ease), opacity 0.4s var(--ease);
+}
+.circular-nav.is-open { opacity: 1; pointer-events: auto; background: rgba(10, 10, 14, 0.86); }
+.circular-nav[hidden] { display: none; }
+
+.circular-dial {
+  position: relative;
+  aspect-ratio: 1;
+  width: min(420px, 82vmin);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: inset 2px 2px 2px rgba(255, 255, 255, 0.05), inset -1px -1px 1px rgba(255, 255, 255, 0.03);
+  transform: scale(0);
+  transition: transform 0.42s var(--ease);
+}
+.circular-nav.is-open .circular-dial { transform: scale(1); }
+
+.circular-close {
+  position: absolute; z-index: 2;
+  width: 48px; height: 48px; aspect-ratio: 1;
+  border-radius: 50%; border: none;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--text); color: var(--bg);
+  cursor: pointer;
+  transition: transform 0.25s var(--ease);
+}
+.circular-close:hover { transform: scale(1.08); }
+.circular-close svg { width: 22px; height: 22px; }
+
+.circular-slot {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(-1 * var(--radius, 150px))) rotate(calc(-1 * var(--angle)));
+}
+.circular-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  width: 80px; height: 80px; aspect-ratio: 1;
+  border-radius: 50%;
+  color: var(--text);
+  background: transparent;
+  transition: background 0.22s, color 0.22s, transform 0.22s var(--ease);
+}
+.circular-item span { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.01em; }
+.circular-item:hover { background: var(--text); color: var(--bg); transform: scale(1.06); }
+.circular-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* Stagger the fan-out so the dial feels assembled, not dumped. */
+.circular-nav.is-open .circular-slot { animation: slot-pop 0.4s var(--ease) backwards; }
+.circular-nav.is-open .circular-slot:nth-child(1) { animation-delay: 0.05s; }
+.circular-nav.is-open .circular-slot:nth-child(2) { animation-delay: 0.10s; }
+.circular-nav.is-open .circular-slot:nth-child(3) { animation-delay: 0.15s; }
+.circular-nav.is-open .circular-slot:nth-child(4) { animation-delay: 0.20s; }
+.circular-nav.is-open .circular-slot:nth-child(5) { animation-delay: 0.25s; }
+.circular-nav.is-open .circular-slot:nth-child(6) { animation-delay: 0.30s; }
+.circular-nav.is-open .circular-slot:nth-child(7) { animation-delay: 0.35s; }
+@keyframes slot-pop { from { opacity: 0; } to { opacity: 1; } }
+
+/* The dial grows with the viewport so labels never clip. */
+@media (min-width: 860px) { .circular-slot { --radius: 158px; } }
+@media (max-width: 859px) { .circular-slot { --radius: 132px; } .circular-item { width: 68px; height: 68px; } }
+@media (max-width: 480px) {
+  .circular-dial { width: 92vmin; }
+  .circular-slot { --radius: 118px; }
+  .circular-item { width: 62px; height: 62px; }
+  .circular-item span { font-size: 0.66rem; }
+}
