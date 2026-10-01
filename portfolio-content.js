@@ -7,6 +7,7 @@
 
   var workGrid = document.querySelector(".project-grid");
   var servicesGrid = document.querySelector(".grid-services");
+  var faqList = document.querySelector(".faq-list");
   if (!workGrid || !servicesGrid) return;
 
   function node(tag, className, text) {
@@ -39,6 +40,45 @@
     link.append(node("span", "", label), node("span", "", "↗"));
     link.lastChild.setAttribute("aria-hidden", "true");
     parent.append(link);
+  }
+
+  /* Split a stored answer into paragraph blocks so the stagger has lines to animate. */
+  function paragraphBlocks(text) {
+    return String(text || "").split(/\n{2,}/).map(function (block) {
+      return block.trim();
+    }).filter(Boolean);
+  }
+
+  function renderFaq(item, index) {
+    var entry = node("div", "faq-item");
+
+    var heading = node("h3");
+    var button = node("button", "faq-trigger");
+    button.type = "button";
+    button.setAttribute("aria-expanded", "false");
+    var question = node("span", "faq-q");
+    if (item.subtitle) question.append(node("span", "faq-tag", item.subtitle));
+    question.append(node("span", "", item.title));
+    button.append(question, node("span", "faq-icon"));
+    button.lastChild.setAttribute("aria-hidden", "true");
+    heading.append(button);
+
+    var panelId = "faq-panel-cms-" + (index + 1);
+    var panel = node("div", "faq-panel");
+    panel.id = panelId;
+    panel.setAttribute("role", "region");
+    panel.setAttribute("aria-label", item.title);
+    panel.hidden = true;
+
+    var inner = node("div", "faq-panel-inner");
+    var answer = node("div", "faq-answer");
+    paragraphBlocks(item.description).forEach(function (block) {
+      answer.append(node("p", "", block));
+    });
+    inner.append(answer);
+    panel.append(inner);
+    entry.append(heading, panel);
+    return entry;
   }
 
   function renderProject(item, index) {
@@ -101,8 +141,14 @@
       if (!Array.isArray(entries)) throw new Error("Invalid content");
       var projects = entries.filter(function (entry) { return entry.kind === "project"; });
       var services = entries.filter(function (entry) { return entry.kind === "service"; });
+      var faqs = entries.filter(function (entry) { return entry.kind === "faq"; });
       workGrid.replaceChildren.apply(workGrid, projects.map(renderProject));
       servicesGrid.replaceChildren.apply(servicesGrid, services.map(renderService));
+      /* Keep the built-in questions until FAQ rows are actually published in the CMS. */
+      if (faqList && faqs.length) {
+        faqList.replaceChildren.apply(faqList, faqs.map(renderFaq));
+        document.dispatchEvent(new CustomEvent("faq:content-rendered"));
+      }
       var counter = document.querySelector(".work-eyebrow span");
       if (counter) counter.textContent = projects.length ? "/ 01—" + String(projects.length).padStart(2, "0") : "/ 00";
       var intro = document.querySelector(".work-intro");

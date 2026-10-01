@@ -1,0 +1,92 @@
+/* FAQ accordion — vanilla port of arihantcodes' Accordion Generative (21st.dev).
+   One open item at a time; the answer's lines stagger in as the panel grows. */
+.faq-section { padding: 110px 0; scroll-margin-top: 84px; }
+.faq-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; margin-bottom: 48px; }
+.faq-head h2 { margin: 0; }
+.faq-head .section-note { max-width: 38ch; }
+
+.faq-list { display: flex; flex-direction: column; border-top: 1px solid var(--border); max-width: 920px; }
+
+.faq-item {
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+.faq-item.is-open { background: #1a1a1f; }
+
+/* The accent edge grows from the top of the open item. */
+.faq-item::before {
+  content: "";
+  position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--accent);
+  transform: scaleY(0); transform-origin: top;
+  transition: transform 0.42s var(--ease);
+}
+.faq-item.is-open::before { transform: scaleY(1); }
+
+.faq-trigger {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  width: 100%; padding: 26px 4px 26px 22px;
+  background: transparent; border: 0; text-align: left;
+  font-family: var(--font-display); font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  font-weight: 500; letter-spacing: -0.02em; line-height: 1.35; color: var(--text);
+  transition: color 0.2s;
+}
+.faq-trigger:hover { color: var(--accent); }
+.faq-item.is-open .faq-trigger { color: var(--text); }
+
+.faq-q { display: block; min-width: 0; }
+.faq-tag {
+  display: block; color: var(--accent);
+  font: 0.68rem/1.5 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+/* Plus becomes a cross as the item opens. */
+.faq-icon { position: relative; flex-shrink: 0; width: 22px; height: 22px; }
+.faq-icon::before, .faq-icon::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  background: var(--accent); border-radius: 2px;
+  transform: translate(-50%, -50%);
+  transition: transform 0.32s var(--ease), opacity 0.32s var(--ease);
+}
+.faq-icon::before { width: 12px; height: 2px; }
+.faq-icon::after { width: 2px; height: 12px; }
+.faq-item.is-open .faq-icon::after { transform: translate(-50%, -50%) rotate(90deg); opacity: 0; }
+
+/* grid-template-rows animates the panel height, so content is never clipped mid-transition. */
+.faq-panel {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s var(--ease);
+}
+.faq-item.is-open .faq-panel { grid-template-rows: 1fr; }
+.faq-panel[hidden] { display: none; }
+.faq-panel-inner { overflow: hidden; min-height: 0; }
+
+.faq-answer { max-width: 66ch; margin: 0; padding: 0 40px 30px 22px; color: var(--text-2); font-size: 0.98rem; line-height: 1.75; }
+
+/* Generative reveal: each line of the answer rises and fades on its own beat. */
+@media (prefers-reduced-motion: no-preference) {
+  .faq-answer > * { opacity: 0; transform: translateY(10px); transition: opacity 0.45s ease, transform 0.45s var(--ease); }
+  .faq-item.is-open .faq-answer > * { opacity: 1; transform: none; }
+  .faq-item.is-open .faq-answer > *:nth-child(1) { transition-delay: 0.08s; }
+  .faq-item.is-open .faq-answer > *:nth-child(2) { transition-delay: 0.16s; }
+  .faq-item.is-open .faq-answer > *:nth-child(3) { transition-delay: 0.24s; }
+  .faq-item.is-open .faq-answer > *:nth-child(4) { transition-delay: 0.32s; }
+  .faq-item.is-open .faq-answer > *:nth-child(5) { transition-delay: 0.40s; }
+}
+
+.faq-item.is-open:first-child, .faq-item.is-open + .faq-item { border-top-color: transparent; }
+.faq-item:focus-within { border-color: var(--accent); }
+
+/* Responsive */
+@media (max-width: 860px) {
+  .faq-section { padding: 80px 0; scroll-margin-top: 72px; }
+  .faq-head { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 32px; }
+  .faq-trigger { padding: 22px 4px 22px 18px; font-size: 1.05rem; }
+  .faq-answer { padding: 0 8px 26px 18px; font-size: 0.94rem; }
+}
+@media (max-width: 520px) {
+  .faq-trigger { gap: 16px; padding: 4px 2px 20px 14px; }
+  .faq-answer { padding: 0 2px 22px 14px; }
+}

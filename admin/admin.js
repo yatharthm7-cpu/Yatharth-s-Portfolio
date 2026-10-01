@@ -38,10 +38,16 @@
     state.kind = kind;
     input("projectsTab").setAttribute("aria-selected", String(kind === "project"));
     input("servicesTab").setAttribute("aria-selected", String(kind === "service"));
-    input("listHeading").textContent = kind === "project" ? "Projects" : "Services";
-    input("formEyebrow").textContent = kind === "project" ? "Project editor" : "Service editor";
+    input("faqsTab").setAttribute("aria-selected", String(kind === "faq"));
+    input("listHeading").textContent = kind === "project" ? "Projects" : kind === "service" ? "Services" : "FAQ questions";
+    input("formEyebrow").textContent = kind === "project" ? "Project editor" : kind === "service" ? "Service editor" : "Question editor";
     input("projectFields").hidden = kind !== "project";
     input("serviceFields").hidden = kind !== "service";
+    input("faqFields").hidden = kind !== "faq";
+    input("descriptionField").hidden = kind === "faq";
+    input("linkFields").hidden = kind === "faq";
+    input("entryDescription").required = kind !== "faq";
+    input("entryAnswer").required = kind === "faq";
     renderList();
     resetForm();
   }
@@ -51,12 +57,13 @@
     list.replaceChildren();
     input("projectCount").textContent = state.entries.filter(function (entry) { return entry.kind === "project"; }).length;
     input("serviceCount").textContent = state.entries.filter(function (entry) { return entry.kind === "service"; }).length;
+    input("faqCount").textContent = state.entries.filter(function (entry) { return entry.kind === "faq"; }).length;
     var items = state.entries.filter(function (entry) { return entry.kind === state.kind; });
     items.sort(function (a, b) { return a.sort_order - b.sort_order || a.title.localeCompare(b.title); });
     if (!items.length) {
       var empty = document.createElement("p");
       empty.className = "admin-empty";
-      empty.textContent = "No " + (state.kind === "project" ? "projects" : "services") + " yet. Add the first one.";
+      empty.textContent = "No " + (state.kind === "project" ? "projects" : state.kind === "service" ? "services" : "questions") + " yet. Add the first one.";
       list.append(empty);
     }
     items.forEach(function (entry) {
@@ -82,9 +89,9 @@
     state.selectedId = null;
     input("entryId").value = "";
     input("entryOrder").value = String(state.entries.filter(function (entry) { return entry.kind === state.kind; }).length + 1);
-    input("entryLinkLabel").value = state.kind === "project" ? "View project" : "Let’s talk";
-    input("entryLinkUrl").value = state.kind === "project" ? "" : "#contact";
-    input("formTitle").textContent = state.kind === "project" ? "New project" : "New service";
+    input("entryLinkLabel").value = state.kind === "project" ? "View project" : state.kind === "service" ? "Let’s talk" : "";
+    input("entryLinkUrl").value = state.kind === "service" ? "#contact" : "";
+    input("formTitle").textContent = state.kind === "project" ? "New project" : state.kind === "service" ? "New service" : "New question";
     renderList();
   }
 
@@ -99,11 +106,12 @@
     input("entryImageAlt").value = entry.details && entry.details.alt || "";
     input("entryImageFile").value = "";
     input("entryBullets").value = entry.details && Array.isArray(entry.details.bullets) ? entry.details.bullets.join("\n") : "";
+    input("entryAnswer").value = entry.description || "";
     input("entryLinkUrl").value = entry.link_url || "";
     input("entryLinkLabel").value = entry.link_label || "";
     input("entryOrder").value = entry.sort_order || 1;
     input("entryPublished").checked = Boolean(entry.published);
-    input("formTitle").textContent = "Edit " + (state.kind === "project" ? "project" : "service");
+    input("formTitle").textContent = "Edit " + (state.kind === "project" ? "project" : state.kind === "service" ? "service" : "question");
     renderList();
     input("entryTitle").focus();
   }
@@ -161,7 +169,7 @@
     message("Signed out.", "success");
   });
 
-  [input("projectsTab"), input("servicesTab")].forEach(function (tab) {
+  [input("projectsTab"), input("servicesTab"), input("faqsTab")].forEach(function (tab) {
     tab.addEventListener("click", function () { setKind(tab.dataset.kind); });
   });
   input("addEntry").addEventListener("click", function () { resetForm(); input("entryTitle").focus(); });
@@ -170,13 +178,13 @@
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
     var title = input("entryTitle").value.trim();
-    var description = input("entryDescription").value.trim();
+    var description = input(state.kind === "faq" ? "entryAnswer" : "entryDescription").value.trim();
     var imageUrl = input("entryImageUrl").value.trim();
     var linkUrl = input("entryLinkUrl").value.trim();
     var published = input("entryPublished").checked;
     var file = input("entryImageFile").files[0];
-    if (!title || !description) { message("Add a title and description.", "error"); return; }
-    if (linkUrl && !validUrl(linkUrl, state.kind === "service")) { message("Use a secure HTTPS link" + (state.kind === "service" ? " or a page link such as #contact" : "") + ".", "error"); return; }
+    if (!title || !description) { message(state.kind === "faq" ? "Add a question and answer." : "Add a title and description.", "error"); return; }
+    if (state.kind !== "faq" && linkUrl && !validUrl(linkUrl, state.kind === "service")) { message("Use a secure HTTPS link" + (state.kind === "service" ? " or a page link such as #contact" : "") + ".", "error"); return; }
     if (state.kind === "project" && imageUrl && !validUrl(imageUrl, false)) { message("Use a secure screenshot URL or an existing assets/ image.", "error"); return; }
     if (published && state.kind === "project" && !imageUrl && !file) { message("Add a screenshot before publishing this project.", "error"); return; }
     if (published && state.kind === "project" && !linkUrl) { message("Add a project link before publishing.", "error"); return; }
@@ -194,12 +202,14 @@
       }
       var details = state.kind === "project"
         ? { contribution: input("entryContribution").value.trim(), alt: input("entryImageAlt").value.trim() }
-        : { bullets: input("entryBullets").value.split("\n").map(function (line) { return line.trim(); }).filter(Boolean).slice(0, 8) };
+        : state.kind === "service"
+        ? { bullets: input("entryBullets").value.split("\n").map(function (line) { return line.trim(); }).filter(Boolean).slice(0, 8) }
+        : {};
       var payload = {
         kind: state.kind, title: title, subtitle: input("entrySubtitle").value.trim(), description: description,
         image_url: state.kind === "project" ? imageUrl : null,
-        link_url: linkUrl || (state.kind === "service" ? "#contact" : null),
-        link_label: input("entryLinkLabel").value.trim() || (state.kind === "project" ? "View project" : "Let’s talk"),
+        link_url: state.kind === "faq" ? null : linkUrl || (state.kind === "service" ? "#contact" : null),
+        link_label: state.kind === "faq" ? "" : input("entryLinkLabel").value.trim() || (state.kind === "project" ? "View project" : "Let’s talk"),
         details: details, sort_order: Number(input("entryOrder").value) || 1,
         published: published, updated_at: new Date().toISOString()
       };

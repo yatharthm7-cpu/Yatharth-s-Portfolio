@@ -9,6 +9,7 @@
     { name: "Tapvora", icon: "card", href: "#nfc" },
     { name: "Process", icon: "steps", href: "#process" },
     { name: "Clients", icon: "quote", href: "#testimonials" },
+    { name: "FAQ", icon: "help", href: "#faq" },
     { name: "About", icon: "user", href: "#about" },
     { name: "Contact", icon: "mail", href: "#contact" }
   ];
@@ -30,6 +31,7 @@
     card: '<rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M8 18v-3h8v3"/>',
     steps: '<path d="M5 4h4v4H5zM11 10h4v4h-4zM17 16h4v4h-4z"/>',
     quote: '<path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/>',
+    help: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.2a2.5 2.5 0 1 1 3.6 2.3c-.7.4-1.2 1-1.2 1.9v.4"/><path d="M12 17h.01"/>',
     user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/>',
     mail: '<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M3 7l9 6 9-6"/>'
   };

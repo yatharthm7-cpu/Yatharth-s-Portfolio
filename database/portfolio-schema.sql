@@ -2,7 +2,7 @@
 create table public.portfolio_entries (
   id uuid primary key default gen_random_uuid(),
   source_key text unique,
-  kind text not null check (kind in ('project', 'service')),
+  kind text not null check (kind in ('project', 'service', 'faq')),
   title text not null check (length(title) between 1 and 100),
   subtitle text not null default '' check (length(subtitle) <= 60),
   description text not null default '' check (length(description) <= 500),

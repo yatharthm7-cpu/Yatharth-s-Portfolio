@@ -91,7 +91,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 84px; }
 .brand { font: 600 1.45rem/1 var(--font-display); letter-spacing: -0.05em; min-height: 44px; display: inline-flex; align-items: center; }
 .brand span { color: var(--accent); }
-.nav-links { display: flex; align-items: center; gap: 26px; }
+/* Desktop: the circular dial IS the navigation, so the link bar stays hidden. */
+.nav-links { display: none; align-items: center; gap: 26px; }
 .nav-links > a { color: var(--text-2); font-size: 0.875rem; display: inline-flex; align-items: center; min-height: 44px; }
 .nav-links a:hover, .nav-links a.active { color: var(--text); }
 .nav-links a.active:not(.nav-cta) { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 8px; }
@@ -320,7 +321,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .nav-inner { min-height: 72px; }
   .nav-toggle { display: flex; }
   .nav-dial { display: none; }
-  .nav-links { display: none; position: absolute; top: 100%; left: 20px; right: 20px; background: #1c1c20; border: 1px solid var(--border); border-radius: 12px; padding: 16px; box-shadow: 0 20px 40px #0005; flex-direction: column; align-items: stretch; gap: 4px; }
+  .nav-links { position: absolute; top: 100%; left: 20px; right: 20px; background: #1c1c20; border: 1px solid var(--border); border-radius: 12px; padding: 16px; box-shadow: 0 20px 40px #0005; flex-direction: column; align-items: stretch; gap: 4px; }
   .nav-links.open { display: flex; }
   .nav-links > a { padding: 10px 14px; }
   .nav-links .nav-cta { margin: 8px 0 0; }

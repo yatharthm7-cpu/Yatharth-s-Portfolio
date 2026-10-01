@@ -61,6 +61,7 @@
 .circular-nav.is-open .circular-slot:nth-child(5) { animation-delay: 0.25s; }
 .circular-nav.is-open .circular-slot:nth-child(6) { animation-delay: 0.30s; }
 .circular-nav.is-open .circular-slot:nth-child(7) { animation-delay: 0.35s; }
+.circular-nav.is-open .circular-slot:nth-child(8) { animation-delay: 0.40s; }
 @keyframes slot-pop { from { opacity: 0; } to { opacity: 1; } }
 
 /* The dial grows with the viewport so labels never clip. */
