@@ -19,7 +19,7 @@ The latest supplied ScaleUpBiz mark is used for the crawlable PNG favicon and or
 3. Inspect the homepage URL and request indexing. Inspect the rendered page to check that the published portfolio content is visible.
 4. Review indexing reports and search queries after Google processes the site. Keep project descriptions and services accurate as content changes.
 
-Search Console verification and sitemap submission have not been performed by this code change. Search features and rankings remain Google's decision. Future service or case-study pages should contain substantive original content, use their own canonical URL, and be linked from the homepage and sitemap.
+The owner-supplied Google verification meta tag is installed in the homepage. The owner must finish verification in Search Console, submit the sitemap and request indexing; those actions have not been performed by this code change. Keep the verification tag installed after verification. Search features and rankings remain Google's decision. Future service or case-study pages should contain substantive original content, use their own canonical URL, and be linked from the homepage and sitemap.
 
 ## Checks
 
