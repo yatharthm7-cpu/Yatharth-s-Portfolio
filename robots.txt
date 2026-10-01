@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Admin URLs stay crawlable so crawlers can read their noindex directive.
+Sitemap: https://scaleupbiz.co.in/sitemap.xml
