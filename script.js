@@ -68,7 +68,7 @@
     var revealTargets = Array.prototype.slice.call(document.querySelectorAll(
       "#work .work-heading, #work .project-card-image, #services .section-head, " +
       "#nfc .nfc-copy h2, #nfc .nfc-stage, #process .section-head, " +
-      "#process .process-grid li, #testimonials .section-head, #testimonials .testimonial-card, " +
+      "#process .process-grid li, #testimonials .section-head, #testimonials .testimonial-showcase, " +
       "#about .about-art, #about .about-copy h2, #contact .contact-card h2, #cta .cta-inner"
     ));
     var revealObserver = new window.IntersectionObserver(function (entries, observer) {
