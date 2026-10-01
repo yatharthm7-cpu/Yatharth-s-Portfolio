@@ -1,6 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
+    { "source": "/", "has": [{ "type": "host", "value": "www.scaleupbiz.co.in" }], "destination": "https://scaleupbiz.co.in/", "permanent": true },
+    { "source": "/", "has": [{ "type": "host", "value": "scaleupbiz.vercel.app" }], "destination": "https://scaleupbiz.co.in/", "permanent": true },
     { "source": "/:path*", "has": [{ "type": "host", "value": "www.scaleupbiz.co.in" }], "destination": "https://scaleupbiz.co.in/:path*", "permanent": true },
     { "source": "/:path*", "has": [{ "type": "host", "value": "scaleupbiz.vercel.app" }], "destination": "https://scaleupbiz.co.in/:path*", "permanent": true },
     { "source": "/index.html", "destination": "/", "permanent": true }
