@@ -1,14 +1,32 @@
 # Private Google Analytics report connection
 
-The dashboard reads property **557081748**, stream **15941294569**. Collection already works with tag `G-3SM0E2QYPQ`. Reading reports requires a separate Google Analytics Data API credential.
+The dashboard reads property **557081748**, stream **15941294569**. Collection uses `G-3SM0E2QYPQ`. Report access uses Vercel OIDC and Google Workload Identity Federation; no downloadable service-account key or private-key environment variable is required.
 
-1. In a separate Google Cloud project for ScaleUpBiz, enable **Google Analytics Data API** (`analyticsdata.googleapis.com`). This feature does not need a paid Cloud resource, a trial or a billing subscription.
-2. Create a service account named `scaleupbiz-analytics-reader`. Do not give it Cloud project roles or domain-wide delegation.
-3. In Google Analytics, open ScaleUpBiz Website → Admin → Property access management. Add the service account email with **Viewer** access to this property only.
-4. Create a JSON key for the service account. Treat the downloaded file as a secret.
-5. Add the full JSON contents as a **Sensitive** Vercel Production environment variable named `GA_SERVICE_ACCOUNT_JSON`. Do not add it to HTML, JavaScript, GitHub or a chat. Redeploy after adding the variable.
-6. Sign in at `https://scaleupbiz.co.in/admin/`. Verify the dashboard shows a successful update. Visit a public page in a separate browser, accept analytics, and check that Google activity appears after its processing delay.
+## Current configuration
 
-The `/api/analytics` function verifies the existing Supabase session with Auth on every request and permits only the confirmed owner email. Google credentials remain server-side. Reports use read-only scope, fixed property/stream IDs, no shared HTTP cache and a 25-second cache inside each warm function instance. Multiple instances can each make their own Google requests; this cache is not a global rate limiter. Auto-refresh pauses when the tab is hidden and can be switched off.
+- Google Cloud project: `scaleupbiz-analytics`, number `979369476930`.
+- Reader: `scaleupbiz-analytics-reader@scaleupbiz-analytics.iam.gserviceaccount.com`.
+- Reader has **Viewer** access to the ScaleUpBiz Website Analytics property only, and no Cloud project roles or domain-wide delegation.
+- Enable Analytics Data API, IAM Service Account Credentials API and Security Token Service API in this project.
+- Workload identity pool: `scaleupbiz-vercel`; provider: `vercel`.
+- Issuer: `https://oidc.vercel.com/yatharthm7-cpus-projects`.
+- Allowed audience: `https://vercel.com/yatharthm7-cpus-projects`.
+- Attribute mapping: `google.subject = assertion.sub`.
+- Attribute condition: `assertion.sub == 'owner:yatharthm7-cpus-projects:project:scaleupbiz:environment:production'`.
+- Grant **Workload Identity User** on the reader service account only to:
+  `principal://iam.googleapis.com/projects/979369476930/locations/global/workloadIdentityPools/scaleupbiz-vercel/subject/owner:yatharthm7-cpus-projects:project:scaleupbiz:environment:production`.
 
-The dashboard labels the 5/30-minute windows, consent limitation and last successful update. An unavailable connection shows a setup or error state with dashes, rather than invented zeros. Contact clicks are reported separately from enquiries. Existing CMS operations and visitor consent remain unchanged.
+The non-secret federation audience and reader email are fixed in `api/analytics.js`. Changes to team/project/pool identifiers require updating both Google trust and that server configuration. Preview and local deployments intentionally cannot read production reports. The organization restriction on creating service-account keys remains enabled.
+
+## Verification
+
+1. Deploy the committed code to Vercel production.
+2. Sign in at `https://scaleupbiz.co.in/admin/`. Confirm a successful Google Analytics update.
+3. Visit a public page in another tab, accept analytics, and check that the report reflects real activity after Google's processing delay. Declined consent and blockers reduce observed traffic.
+4. Confirm unauthenticated `/api/analytics` requests return 401, and non-owner accounts cannot read reports.
+
+The function verifies the existing Supabase session with Auth on every request, including cached reports, and permits only the confirmed owner email. Google's official client exchanges the current runtime identity for a short-lived read-only Analytics token. Private tokens remain server-side, are never logged, and never appear in website files, GitHub or chat. No credential file is downloaded or uploaded.
+
+Reports use fixed property/stream IDs, read-only scope, no shared HTTP cache and a 25-second cache inside each warm function instance. Multiple instances can make separate requests; this is not a global rate limiter. Dashboard auto-refresh runs every 30 seconds while visible and can be switched off. Connection failures show dashes or clearly labelled stale values instead of invented zero counts. Contact clicks remain separate from successful enquiries.
+
+Reference: https://vercel.com/docs/oidc/gcp

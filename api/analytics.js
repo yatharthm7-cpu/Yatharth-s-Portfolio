@@ -1,12 +1,15 @@
 "use strict";
-const { GoogleAuth } = require("google-auth-library");
+const { ExternalAccountClient } = require("google-auth-library");
+const { getVercelOidcToken } = require("@vercel/oidc");
 const PROPERTY_ID = "557081748";
 const STREAM_ID = "15941294569";
 const OWNER_EMAIL = "yatharth@scaleupbiz.co.in";
 const SUPABASE_URL = "https://ccttomyjutpppemvtvfk.supabase.co";
 const PUBLISHABLE_KEY = "sb_publishable_5_X0dNFzo0sLPC0oPUOE7A_IIkmG1lG";
+const FEDERATION_AUDIENCE = "//iam.googleapis.com/projects/979369476930/locations/global/workloadIdentityPools/scaleupbiz-vercel/providers/vercel";
+const READER_EMAIL = "scaleupbiz-analytics-reader@scaleupbiz-analytics.iam.gserviceaccount.com";
 
-function createHandler({ fetcher = fetch, env = process.env, now = Date.now, googleAuth = options => new GoogleAuth(options) } = {}) {
+function createHandler({ fetcher = fetch, env = process.env, now = Date.now, googleAuth = options => ExternalAccountClient.fromJSON(options), oidcToken = getVercelOidcToken } = {}) {
   let auth, cached, pending;
   function fail(status, code) { return Object.assign(new Error(code), { status, code }); }
   async function jsonRequest(url, options) {
@@ -16,20 +19,23 @@ function createHandler({ fetcher = fetch, env = process.env, now = Date.now, goo
     return { response, data };
   }
   async function readReport() {
-    if (!env.GA_SERVICE_ACCOUNT_JSON) throw fail(503, "analytics_setup_required");
+    if (env.VERCEL_ENV !== "production") throw fail(503, "analytics_setup_required");
     if (!auth) {
-      let credentials;
-      try { credentials = JSON.parse(env.GA_SERVICE_ACCOUNT_JSON); } catch (_) { throw fail(503, "analytics_setup_required"); }
-      if (!credentials || credentials.type !== "service_account" || typeof credentials.client_email !== "string" || typeof credentials.private_key !== "string" || !credentials.client_email || !credentials.private_key) throw fail(503, "analytics_setup_required");
-      // Whitelist credential fields; never follow URLs supplied in a credential file.
+      // Fixed, non-secret federation config. Google trusts only this production deployment.
       auth = googleAuth({
-        credentials: { type: "service_account", client_email: credentials.client_email, private_key: credentials.private_key, private_key_id: credentials.private_key_id },
+        type: "external_account",
+        audience: FEDERATION_AUDIENCE,
+        subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+        token_url: "https://sts.googleapis.com/v1/token",
+        service_account_impersonation_url: "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/" + READER_EMAIL + ":generateAccessToken",
+        // Obtain the current runtime token whenever Google needs to refresh access.
+        subject_token_supplier: { getSubjectToken: () => oidcToken() },
         scopes: ["https://www.googleapis.com/auth/analytics.readonly"]
       });
     }
     let accessToken;
-    try { accessToken = await auth.getAccessToken(); } catch (_) { auth = undefined; throw fail(503, "analytics_connection_failed"); }
-    if (!accessToken) throw fail(503, "analytics_connection_failed");
+    try { accessToken = (await auth.getAccessToken()).token; } catch (_) { auth = undefined; throw fail(503, "analytics_connection_failed"); }
+    if (typeof accessToken !== "string" || !accessToken) throw fail(503, "analytics_connection_failed");
     const url = "https://analyticsdata.googleapis.com/v1beta/properties/" + PROPERTY_ID + ":runRealtimeReport";
     async function report(body) {
       const { response, data } = await jsonRequest(url, {

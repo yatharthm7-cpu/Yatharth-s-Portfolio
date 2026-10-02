@@ -62,7 +62,7 @@
           <div><h3>Contact clicks <span>last 30 min</span></h3><ul class="tracking-list"><li><span>WhatsApp</span><strong id="tracking-whatsappClicks30">—</strong></li><li><span>Email</span><strong id="tracking-emailClicks30">—</strong></li></ul><p class="admin-note">A contact click shows interest; it does not confirm a message was sent.</p></div>
         </div>
         <div class="tracking-foot"><p id="trackingUpdated">No report loaded yet.</p><p>Counts cover visitors who accept analytics. Google may report activity with a short delay.</p></div>
-        <details id="trackingSetup" class="tracking-setup" hidden><summary>Connect the private report feed</summary><p>The site already sends events to Google Analytics. To display reports here, add the server credential in Vercel and grant its service account Viewer access to the ScaleUpBiz property. The credential must never be placed in website files.</p><a href="https://developers.google.com/analytics/devguides/reporting/data/v1/quickstart" target="_blank" rel="noopener noreferrer">Google connection guide ↗</a></details>
+        <details id="trackingSetup" class="tracking-setup" hidden><summary>Check the private report connection</summary><p>This dashboard uses a secure, keyless connection from the production website to Google Analytics. Its reader needs Viewer access to the ScaleUpBiz property. Check the connection settings if reports are unavailable; no private key needs to be uploaded.</p><a href="https://vercel.com/docs/oidc/gcp" target="_blank" rel="noopener noreferrer">Secure connection guide ↗</a></details>
       </section>
 
       <div class="admin-layout">

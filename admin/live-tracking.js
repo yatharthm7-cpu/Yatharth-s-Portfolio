@@ -11,7 +11,7 @@
     var fields = ["activeUsers5", "activeUsers30", "pageViews30", "enquiries30", "whatsappClicks30", "emailClicks30"];
     var messages = {
       analytics_setup_required: "Google Analytics needs its private server connection. The setup guide below explains the final connection step.",
-      analytics_connection_failed: "The Google connection could not be verified. Check the server credential and try again.",
+      analytics_connection_failed: "The secure Google connection could not be verified. Check the production connection and try again.",
       analytics_access_required: "Google denied report access. Enable the Analytics Data API and give the dashboard connection Viewer access to this property.",
       analytics_rate_limited: "Google's report limit was reached. Wait a moment and refresh.",
       sign_in_required: "Your session has expired. Sign in again to view tracking.",

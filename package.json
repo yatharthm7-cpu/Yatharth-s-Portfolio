@@ -2,6 +2,11 @@
   "name": "scaleupbiz-portfolio",
   "version": "1.0.0",
   "private": true,
-  "engines": { "node": "24.x" },
-  "dependencies": { "google-auth-library": "11.1.0" }
+  "engines": {
+    "node": "24.x"
+  },
+  "dependencies": {
+    "@vercel/oidc": "3.8.9",
+    "google-auth-library": "11.1.0"
+  }
 }

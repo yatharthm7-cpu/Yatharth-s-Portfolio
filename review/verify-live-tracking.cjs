@@ -4,13 +4,13 @@ const fs = require("node:fs");
 const vm = require("node:vm");
 const { createHandler } = require("../api/analytics.js");
 const owner = { id: "owner-id", email: "yatharth@scaleupbiz.co.in", email_confirmed_at: "2026-10-02", is_anonymous: false };
-const credential = { type: "service_account", client_email: "reader@example.iam.gserviceaccount.com", private_key: "test-key", token_uri: "https://untrusted.invalid" };
 function fixture(options = {}) {
-  let time = Date.parse("2026-10-02T12:00:00Z"), authCalls = 0, reportCalls = 0, authOptions;
+  let time = Date.parse("2026-10-02T12:00:00Z"), authCalls = 0, reportCalls = 0, authOptions, oidcVersion = 1, supplied = [];
   const handler = createHandler({
-    env: { GA_SERVICE_ACCOUNT_JSON: options.credential === undefined ? JSON.stringify(credential) : options.credential },
+    env: { VERCEL_ENV: options.environment === undefined ? "production" : options.environment },
     now: () => time,
-    googleAuth: config => { authOptions = config; return { getAccessToken: async () => { if (options.tokenFailure) throw Error("secret-error"); return "test-google-token"; } }; },
+    oidcToken: async () => "test-oidc-" + oidcVersion,
+    googleAuth: config => { authOptions = config; return { getAccessToken: async () => { supplied.push(await config.subject_token_supplier.getSubjectToken()); if (options.tokenFailure) throw Error("secret-error"); return { token: options.emptyToken ? null : "test-google-token" }; } }; },
     fetcher: async (url, init) => {
       if (url.endsWith("/auth/v1/user")) {
         authCalls++; assert.equal(init.headers.apikey.startsWith("sb_publishable_"), true);
@@ -38,7 +38,7 @@ function fixture(options = {}) {
     await handler({ method, headers: { authorization }, query: { property: "untrusted" } }, res);
     return result;
   }
-  return { call, advance: ms => { time += ms; }, counts: () => ({ authCalls, reportCalls }), authOptions: () => authOptions };
+  return { call, advance: ms => { time += ms; oidcVersion++; }, counts: () => ({ authCalls, reportCalls }), authOptions: () => authOptions, supplied: () => supplied };
 }
 async function backend() {
   const noAuth = fixture();
@@ -50,8 +50,8 @@ async function backend() {
   for (const user of [{ ...owner, email: "other@example.com" }, { ...owner, email_confirmed_at: null }, { ...owner, is_anonymous: true }]) {
     const f = fixture({ user }); assert.equal((await f.call()).status, 403); assert.equal(f.counts().reportCalls, 0);
   }
-  for (const value of ["", "bad-json", "null", "{}", JSON.stringify({ ...credential, private_key: {} })]) {
-    const result = await fixture({ credential: value }).call(); assert.equal(result.status, 503); assert.equal(result.body.error, "analytics_setup_required");
+  for (const environment of ["", "preview", "development"]) {
+    const result = await fixture({ environment }).call(); assert.equal(result.status, 503); assert.equal(result.body.error, "analytics_setup_required");
   }
   const f = fixture(), result = await f.call();
   assert.equal(result.status, 200);
@@ -59,9 +59,16 @@ async function backend() {
   assert.deepEqual([result.body.activeUsers5, result.body.activeUsers30, result.body.pageViews30, result.body.enquiries30, result.body.whatsappClicks30, result.body.emailClicks30], [2, 7, 15, 3, 4, 2]);
   assert.deepEqual(result.body.countries, [{ name: "India", count: 7 }]);
   assert.deepEqual(f.authOptions().scopes, ["https://www.googleapis.com/auth/analytics.readonly"]);
-  assert.equal(f.authOptions().credentials.token_uri, undefined);
+  assert.equal(f.authOptions().type, "external_account");
+  assert.equal(f.authOptions().audience, "//iam.googleapis.com/projects/979369476930/locations/global/workloadIdentityPools/scaleupbiz-vercel/providers/vercel");
+  assert.equal(f.authOptions().token_url, "https://sts.googleapis.com/v1/token");
+  assert.equal(f.authOptions().service_account_impersonation_url, "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/scaleupbiz-analytics-reader@scaleupbiz-analytics.iam.gserviceaccount.com:generateAccessToken");
+  assert.equal(f.authOptions().credentials, undefined);
+  assert.equal(f.authOptions().credential_source, undefined);
   await f.call(); assert.deepEqual(f.counts(), { authCalls: 2, reportCalls: 5 });
   f.advance(25000); await f.call(); assert.deepEqual(f.counts(), { authCalls: 3, reportCalls: 10 });
+  assert.deepEqual(f.supplied(), ["test-oidc-1", "test-oidc-2"], "Refresh must obtain the current runtime identity, rather than a captured token");
+  assert.equal((await fixture({ emptyToken: true }).call()).body.error, "analytics_connection_failed");
   let release;
   const concurrent = fixture({ wait: new Promise(resolve => { release = resolve; }) });
   const calls = [concurrent.call(), concurrent.call()]; await new Promise(resolve => setImmediate(resolve)); release();
