@@ -152,6 +152,7 @@
       form.reset();
       foot.classList.add("is-success");
       foot.textContent = "Message received. I’ll reply by email.";
+      if (window.ScaleUpAnalytics) window.ScaleUpAnalytics.trackLead("portfolio");
     } catch {
       foot.classList.add("is-error");
       foot.textContent = "Your message was not sent. Please try again or use email or WhatsApp below.";

@@ -1,0 +1,15 @@
+.analytics-choice[hidden] { display: none; }
+.analytics-choice { position: fixed; z-index: 10000; bottom: 16px; left: 16px; width: min(450px, calc(100% - 32px)); padding: 20px; border: 1px solid #55505e; border-radius: 16px; background: #1c1c20; color: #f3f0e9; box-shadow: 0 8px 30px #0005; font: 14px/1.5 Inter, sans-serif; }
+.analytics-choice p { margin: 0 0 14px; color: #d4d0da; }
+.analytics-choice strong { display: block; margin-bottom: 6px; color: #f3f0e9; }
+.analytics-choice a { color: #d3bff6; text-decoration: underline; text-underline-offset: 3px; }
+.analytics-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.analytics-actions button { flex: 1; min-height: 44px; border: 1px solid #8d809f; border-radius: 8px; padding: 10px 12px; background: transparent; color: #f3f0e9; font: inherit; font-weight: 600; cursor: pointer; }
+.analytics-actions button:hover { background: #38313f; }
+.analytics-actions button:focus-visible, .analytics-settings:focus-visible, .analytics-choice a:focus-visible { outline: 2px solid #d3bff6; outline-offset: 4px; }
+.analytics-settings { background: transparent; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.privacy-content { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+.privacy-content h1 { font-size: clamp(36px, 7vw, 64px); margin: 32px 0; }
+.privacy-content h2 { font-size: 24px; margin: 32px 0 12px; }
+.privacy-content p { color: #c8c4ce; line-height: 1.75; }
+.privacy-content a { color: #d3bff6; text-decoration: underline; }

@@ -59,6 +59,7 @@
       form.reset();
       status.classList.add("is-success");
       status.textContent = "Enquiry received. I’ll reply by email.";
+      if (window.ScaleUpAnalytics) window.ScaleUpAnalytics.trackLead("website_development");
     } catch {
       status.classList.add("is-error");
       status.textContent = "Your enquiry was not sent. Your answers are still in the form — please try again, or email me or use WhatsApp instead.";
