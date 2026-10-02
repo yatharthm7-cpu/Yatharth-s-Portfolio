@@ -52,8 +52,11 @@ function createHandler({ fetcher = fetch, env = process.env, now = Date.now, goo
         if (response.status === 429) throw fail(429, "analytics_rate_limited");
         throw fail(502, "analytics_unavailable");
       }
+      // An empty protobuf response may omit repeated headers/rows. Only accept
+      // that sparse shape when Google's report kind identifies a real report.
+      if (data.kind === "analyticsData#runRealtimeReport" && !data.error && (data.rowCount === undefined || data.rowCount === 0) && (data.rows === undefined || Array.isArray(data.rows) && data.rows.length === 0) && (data.metricHeaders === undefined || Array.isArray(data.metricHeaders) && data.metricHeaders.length === 0)) return data;
       if (!Array.isArray(data.metricHeaders) || data.metricHeaders.length !== body.metrics.length || data.metricHeaders.some((header, index) => header.name !== body.metrics[index].name) || (data.rows !== undefined && !Array.isArray(data.rows))) {
-        console.warn("analytics_report_schema_failed", { report: body.dimensions?.[0]?.name || "totals", headers: Array.isArray(data.metricHeaders) ? data.metricHeaders.map(header => ["activeUsers", "screenPageViews", "eventCount"].includes(header.name) ? header.name : "unexpected") : "missing", rows: data.rows === undefined ? "absent" : Array.isArray(data.rows) ? "array" : "invalid" });
+        console.warn("analytics_report_schema_failed", { report: body.dimensions?.[0]?.name || "totals" });
         throw fail(502, "analytics_unavailable");
       }
       return data;

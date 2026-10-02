@@ -29,6 +29,7 @@ function fixture(options = {}) {
         : dimension === "unifiedScreenName" ? [row([9], ["<script>Title</script>"])]
         : body.minuteRanges[0].startMinutesAgo === 4 ? [row([2])] : [row([7, 15])];
       if (options.wait) await options.wait;
+      if (options.sparse) return { ok: true, status: 200, json: async () => options.invalidSparse ? {} : { kind: "analyticsData#runRealtimeReport" } };
       return { ok: !options.reportStatus, status: options.reportStatus || 200, json: async () => ({ error: "private-key-secret", metricHeaders: body.metrics.map(metric => ({ name: options.badHeaders ? "wrong" : metric.name })), rows: options.empty ? [] : rows }) };
     }
   });
@@ -74,6 +75,8 @@ async function backend() {
   const calls = [concurrent.call(), concurrent.call()]; await new Promise(resolve => setImmediate(resolve)); release();
   await Promise.all(calls); assert.deepEqual(concurrent.counts(), { authCalls: 2, reportCalls: 5 });
   const empty = await fixture({ empty: true }).call(); assert.equal(empty.status, 200); assert.equal(empty.body.pageViews30, 0); assert.deepEqual(empty.body.pages, []);
+  const sparse = await fixture({ sparse: true }).call(); assert.equal(sparse.status, 200); assert.equal(sparse.body.activeUsers5, 0); assert.equal(sparse.body.pageViews30, 0); assert.deepEqual(sparse.body.pages, []);
+  assert.equal((await fixture({ sparse: true, invalidSparse: true }).call()).status, 502, "An unidentified empty response must not become invented zero counts");
   for (const [options, status, code] of [[{ reportStatus: 403 }, 503, "analytics_access_required"], [{ reportStatus: 429 }, 429, "analytics_rate_limited"], [{ reportStatus: 500 }, 502, "analytics_unavailable"], [{ badHeaders: true }, 502, "analytics_unavailable"], [{ tokenFailure: true }, 503, "analytics_connection_failed"]]) {
     const r = await fixture(options).call(); assert.equal(r.status, status); assert.deepEqual(r.body, { error: code }); assert.equal(JSON.stringify(r).includes("secret"), false);
   }
