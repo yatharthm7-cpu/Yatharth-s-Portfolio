@@ -86,7 +86,11 @@ for offer in organization["hasOfferCatalog"]["itemListElement"]:
     assert service["name"].casefold() in body, "Schema service must appear in visible HTML"
     assert urlparse(service["url"]).fragment in page.ids
 sitemap = ET.parse(ROOT / "sitemap.xml")
-assert [item.text for item in sitemap.findall(".//{http://www.sitemaps.org/schemas/sitemap/0.9}loc")] == [BASE]
+sitemap_urls = [item.text for item in sitemap.findall(".//{http://www.sitemaps.org/schemas/sitemap/0.9}loc")]
+assert sitemap_urls == [BASE, BASE + "website-development/"], "Sitemap must list the homepage and the service page"
+for url in sitemap_urls:
+    local = url.replace(BASE, "").lstrip("/")
+    assert local == "" or (ROOT / local).exists(), f"Sitemap route must exist locally: {url}"
 robots = (ROOT / "robots.txt").read_text()
 assert "Sitemap: " + BASE + "sitemap.xml" in robots
 assert not re.search(r"^Disallow:\s*/(?:admin|\s*$)", robots, re.M), "Crawlers need access to read admin noindex"

@@ -19,6 +19,8 @@
 
   function safeUrl(value, allowAnchor) {
     if (allowAnchor && /^#[a-z][a-z0-9-]*$/i.test(value || "")) return value;
+    /* Site-relative routes (e.g. /website-development/) stay on this domain. */
+    if (/^\/[a-z0-9][a-z0-9./-]*$/i.test(value || "") && !value.includes("..")) return value;
     try {
       var url = new URL(value);
       return url.protocol === "https:" ? url.href : "";
@@ -33,7 +35,7 @@
     var link = node("a", className);
     link.href = destination;
     if (accessibleLabel) link.setAttribute("aria-label", accessibleLabel);
-    if (!destination.startsWith("#")) {
+    if (/^https:/i.test(destination)) {
       link.target = "_blank";
       link.rel = "noopener noreferrer";
     }
@@ -130,11 +132,17 @@
       bullets.forEach(function (bullet) { list.append(node("li", "", String(bullet))); });
       card.append(list);
     }
-    addLink(card, item.link_url || "#contact", item.link_label || "Let’s talk", "text-link");
+    var linkRow = node("div", "service-links");
+    addLink(linkRow, item.link_url || "#contact", item.link_label || "Let’s talk", "text-link");
+    /* The website-development page link is structural, so the CMS cannot drop it. */
+    if (item.source_key === "websites") {
+      addLink(linkRow, "/website-development/", "Explore website development", "text-link", "Explore the ScaleUpBiz website development service");
+    }
+    card.append(linkRow);
     return card;
   }
 
-  var endpoint = config.url.replace(/\/$/, "") + "/rest/v1/portfolio_entries?select=id,kind,title,subtitle,description,details,image_url,link_url,link_label,sort_order&published=eq.true&order=sort_order.asc";
+  var endpoint = config.url.replace(/\/$/, "") + "/rest/v1/portfolio_entries?select=id,kind,title,subtitle,description,details,image_url,link_url,link_label,source_key,sort_order&published=eq.true&order=sort_order.asc";
   fetch(endpoint, { headers: { apikey: config.publishableKey }, cache: "no-store" })
     .then(function (response) { if (!response.ok) throw new Error("Content unavailable"); return response.json(); })
     .then(function (entries) {

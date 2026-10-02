@@ -4,7 +4,7 @@ Production URL: https://scaleupbiz.co.in/
 
 The homepage includes descriptive metadata, one canonical URL, the existing sharing image, and linked Organization, Person, WebSite and WebPage data. The five services are described in visible HTML and in the organization's offer catalog. No ratings, client results, pricing, addresses or awards were invented.
 
-`robots.txt` allows crawling and points to `sitemap.xml`. The sitemap contains the homepage only: section anchors are not separate pages. No fixed last-modified date is used because the admin can update published content independently of a deployment.
+`robots.txt` allows crawling and points to `sitemap.xml`. The sitemap contains the homepage and the `/website-development/` service page; section anchors are not separate pages. No fixed last-modified date is used for the homepage because the admin can update published content independently of a deployment; the static service page carries a last-modified date that changes only with deployments.
 
 The admin keeps its HTML noindex directive and gets an X-Robots-Tag header. Robots does not block admin crawling, allowing search engines to see that directive. Database and review artifacts also receive noindex headers. These directives do not replace authentication or database access controls.
 

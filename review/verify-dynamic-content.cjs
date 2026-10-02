@@ -16,7 +16,7 @@ class Element {
 
 const entries = [
   { id: 'one', kind: 'project', title: '<script>Project</script>', subtitle: 'Web', description: 'A real build.', details: { alt: 'Homepage', contribution: 'Design and build' }, image_url: 'assets/work-shakti.jpg', link_url: 'https://example.com/', link_label: 'View project' },
-  { id: 'two', kind: 'service', title: 'Website design', subtitle: 'WEB', description: 'A considered website.', details: { bullets: ['Design', 'Build'] }, link_url: '#contact', link_label: 'Discuss project' },
+  { id: 'two', kind: 'service', title: 'Website design', subtitle: 'WEB', source_key: 'websites', description: 'A considered website.', details: { bullets: ['Design', 'Build'] }, link_url: '#contact', link_label: 'Discuss project' },
   { id: 'three', kind: 'faq', title: 'How long does a site take?', subtitle: '01 / Websites', description: 'Two to four weeks.\n\nLarger projects take longer.', details: {}, image_url: null, link_url: null, link_label: '' }
 ];
 
@@ -52,9 +52,19 @@ async function main() {
   assert.equal(result.servicesGrid.children.length, 1);
   const project = result.workGrid.children[0];
   assert.equal(project.children[1].children[1].textContent, '<script>Project</script>', 'Content stays text, not HTML');
+  const projectLink = project.children[1].children[4];
+  assert.equal(projectLink.target, '_blank', 'External project links open in a new tab');
+  assert.equal(projectLink.rel, 'noopener noreferrer');
   assert.equal(result.counter.textContent, '/ 01—01');
   const service = result.servicesGrid.children[0];
   assert.equal(service.children[3].children.length, 2);
+  const linkRow = service.children[4];
+  assert.equal(linkRow.attributes.class, 'service-links', 'Service links render in a shared row');
+  assert.equal(linkRow.children.length, 2, 'The websites service card carries both its enquiry link and the service page link');
+  assert.equal(linkRow.children[0].href, '#contact');
+  assert.equal(linkRow.children[1].href, '/website-development/', 'The service page link survives the CMS render');
+  assert.equal(linkRow.children[1].attributes.target, undefined, 'The internal page link opens in the same tab');
+  assert.equal(linkRow.children[0].attributes.target, undefined, 'Anchor links do not open in a new tab');
 
   const faq = result.faqList.children[0];
   assert.ok(faq, 'A FAQ entry renders into the accordion');
