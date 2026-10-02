@@ -1,1 +1,7 @@
 .mimosa/
+node_modules/
+.env
+.env.*
+!.env.example
+.vercel/
+*-service-account.json

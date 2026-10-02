@@ -39,11 +39,31 @@
       <div class="admin-intro">
         <div>
           <p class="eyebrow">Content desk</p>
-          <h1 id="editorTitle">Projects &amp; services<span>.</span></h1>
+          <h1 id="editorTitle">Your dashboard<span>.</span></h1>
           <p>Write clearly, add a strong image, and publish when the entry is ready. Saved drafts stay off the public site.</p>
         </div>
         <div class="admin-owner">Signed in as <strong id="signedInEmail"></strong></div>
       </div>
+
+      <section id="liveTracking" class="live-tracking" aria-labelledby="trackingTitle" data-state="idle">
+        <div class="tracking-head">
+          <div><p class="eyebrow">Website activity</p><h2 id="trackingTitle">Live tracking</h2><p id="trackingStatus" role="status" aria-live="polite">Sign in to view live tracking.</p></div>
+          <div class="tracking-controls"><label><input type="checkbox" id="trackingAuto" checked /> Auto-refresh every 30s</label><button type="button" class="btn btn-ghost" id="trackingRefresh">Refresh</button><a href="https://analytics.google.com/analytics/web/#/a410467418p557081748/realtime/overview" target="_blank" rel="noopener noreferrer">Open Google Analytics ↗</a></div>
+        </div>
+        <div class="tracking-metrics">
+          <div><p>Active visitors · last 5 min</p><strong id="tracking-activeUsers5">—</strong></div>
+          <div><p>Active visitors · last 30 min</p><strong id="tracking-activeUsers30">—</strong></div>
+          <div><p>Page views · last 30 min</p><strong id="tracking-pageViews30">—</strong></div>
+          <div><p>Successful enquiries · last 30 min</p><strong id="tracking-enquiries30">—</strong></div>
+        </div>
+        <div class="tracking-details">
+          <div><h3>Pages viewed <span>last 30 min</span></h3><ul id="trackingPages" class="tracking-list"></ul></div>
+          <div><h3>Visitor countries <span>last 30 min</span></h3><ul id="trackingCountries" class="tracking-list"></ul></div>
+          <div><h3>Contact clicks <span>last 30 min</span></h3><ul class="tracking-list"><li><span>WhatsApp</span><strong id="tracking-whatsappClicks30">—</strong></li><li><span>Email</span><strong id="tracking-emailClicks30">—</strong></li></ul><p class="admin-note">A contact click shows interest; it does not confirm a message was sent.</p></div>
+        </div>
+        <div class="tracking-foot"><p id="trackingUpdated">No report loaded yet.</p><p>Counts cover visitors who accept analytics. Google may report activity with a short delay.</p></div>
+        <details id="trackingSetup" class="tracking-setup" hidden><summary>Connect the private report feed</summary><p>The site already sends events to Google Analytics. To display reports here, add the server credential in Vercel and grant its service account Viewer access to the ScaleUpBiz property. The credential must never be placed in website files.</p><a href="https://developers.google.com/analytics/devguides/reporting/data/v1/quickstart" target="_blank" rel="noopener noreferrer">Google connection guide ↗</a></details>
+      </section>
 
       <div class="admin-layout">
         <aside class="admin-sidebar" aria-label="Content list">
@@ -103,6 +123,7 @@
 
   <script src="/content-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1" defer></script>
+  <script src="/admin/live-tracking.js" defer></script>
   <script src="/admin/admin.js" defer></script>
 </body>
 </html>

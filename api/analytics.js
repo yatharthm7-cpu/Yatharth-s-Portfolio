@@ -1,0 +1,108 @@
+"use strict";
+const { GoogleAuth } = require("google-auth-library");
+const PROPERTY_ID = "557081748";
+const STREAM_ID = "15941294569";
+const OWNER_EMAIL = "yatharth@scaleupbiz.co.in";
+const SUPABASE_URL = "https://ccttomyjutpppemvtvfk.supabase.co";
+const PUBLISHABLE_KEY = "sb_publishable_5_X0dNFzo0sLPC0oPUOE7A_IIkmG1lG";
+
+function createHandler({ fetcher = fetch, env = process.env, now = Date.now, googleAuth = options => new GoogleAuth(options) } = {}) {
+  let auth, cached, pending;
+  function fail(status, code) { return Object.assign(new Error(code), { status, code }); }
+  async function jsonRequest(url, options) {
+    const response = await fetcher(url, { ...options, signal: AbortSignal.timeout(10000) });
+    let data;
+    try { data = await response.json(); } catch (_) { throw fail(502, "analytics_unavailable"); }
+    return { response, data };
+  }
+  async function readReport() {
+    if (!env.GA_SERVICE_ACCOUNT_JSON) throw fail(503, "analytics_setup_required");
+    if (!auth) {
+      let credentials;
+      try { credentials = JSON.parse(env.GA_SERVICE_ACCOUNT_JSON); } catch (_) { throw fail(503, "analytics_setup_required"); }
+      if (!credentials || credentials.type !== "service_account" || typeof credentials.client_email !== "string" || typeof credentials.private_key !== "string" || !credentials.client_email || !credentials.private_key) throw fail(503, "analytics_setup_required");
+      // Whitelist credential fields; never follow URLs supplied in a credential file.
+      auth = googleAuth({
+        credentials: { type: "service_account", client_email: credentials.client_email, private_key: credentials.private_key, private_key_id: credentials.private_key_id },
+        scopes: ["https://www.googleapis.com/auth/analytics.readonly"]
+      });
+    }
+    let accessToken;
+    try { accessToken = await auth.getAccessToken(); } catch (_) { auth = undefined; throw fail(503, "analytics_connection_failed"); }
+    if (!accessToken) throw fail(503, "analytics_connection_failed");
+    const url = "https://analyticsdata.googleapis.com/v1beta/properties/" + PROPERTY_ID + ":runRealtimeReport";
+    async function report(body) {
+      const { response, data } = await jsonRequest(url, {
+        method: "POST", headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          minuteRanges: [{ startMinutesAgo: 29, endMinutesAgo: 0 }],
+          dimensionFilter: { filter: { fieldName: "streamId", stringFilter: { value: STREAM_ID, matchType: "EXACT" } } },
+          ...body
+        })
+      });
+      if (!response.ok) {
+        if (response.status === 403) throw fail(503, "analytics_access_required");
+        if (response.status === 429) throw fail(429, "analytics_rate_limited");
+        throw fail(502, "analytics_unavailable");
+      }
+      if (!Array.isArray(data.metricHeaders) || data.metricHeaders.length !== body.metrics.length || data.metricHeaders.some((header, index) => header.name !== body.metrics[index].name) || (data.rows !== undefined && !Array.isArray(data.rows))) throw fail(502, "analytics_unavailable");
+      return data;
+    }
+    const reports = await Promise.all([
+      report({ metrics: [{ name: "activeUsers" }, { name: "screenPageViews" }] }),
+      report({ metrics: [{ name: "activeUsers" }], minuteRanges: [{ startMinutesAgo: 4, endMinutesAgo: 0 }] }),
+      report({ dimensions: [{ name: "unifiedScreenName" }], metrics: [{ name: "screenPageViews" }], orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }], limit: "8" }),
+      report({ dimensions: [{ name: "country" }], metrics: [{ name: "activeUsers" }], orderBys: [{ metric: { metricName: "activeUsers" }, desc: true }], limit: "6" }),
+      report({ dimensions: [{ name: "eventName" }], metrics: [{ name: "eventCount" }], limit: "100" })
+    ]);
+    function number(row, index = 0) {
+      const value = Number(row && row.metricValues && row.metricValues[index] && row.metricValues[index].value || 0);
+      if (!Number.isFinite(value) || value < 0) throw fail(502, "analytics_unavailable");
+      return value;
+    }
+    function list(report) {
+      return (report.rows || []).map(row => ({ name: String(row.dimensionValues && row.dimensionValues[0] && row.dimensionValues[0].value || "Unknown").slice(0, 160), count: number(row) }));
+    }
+    const events = Object.fromEntries(list(reports[4]).map(row => [row.name, row.count]));
+    return {
+      updatedAt: new Date(now()).toISOString(),
+      activeUsers5: number(reports[1].rows && reports[1].rows[0]),
+      activeUsers30: number(reports[0].rows && reports[0].rows[0]),
+      pageViews30: number(reports[0].rows && reports[0].rows[0], 1),
+      enquiries30: events.generate_lead || 0,
+      whatsappClicks30: events.whatsapp_click || 0,
+      emailClicks30: events.email_click || 0,
+      pages: list(reports[2]), countries: list(reports[3])
+    };
+  }
+  return async function handler(req, res) {
+    res.setHeader("Cache-Control", "private, no-store");
+    res.setHeader("Vercel-CDN-Cache-Control", "no-store");
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    if (req.method !== "GET") { res.setHeader("Allow", "GET"); return res.status(405).json({ error: "method_not_allowed" }); }
+    const authorization = req.headers.authorization || "";
+    if (!/^Bearer [A-Za-z0-9._-]+$/.test(authorization) || authorization.length > 8192) return res.status(401).json({ error: "sign_in_required" });
+    try {
+      // Verify the session with Auth before reading cached or new reports.
+      const { response, data: user } = await jsonRequest(SUPABASE_URL + "/auth/v1/user", {
+        headers: { apikey: PUBLISHABLE_KEY, Authorization: authorization }
+      });
+      if (!response.ok) {
+        if (response.status >= 500) throw fail(503, "auth_unavailable");
+        return res.status(401).json({ error: "sign_in_required" });
+      }
+      if (!user.id || user.is_anonymous || !user.email_confirmed_at || String(user.email || "").toLowerCase() !== OWNER_EMAIL) return res.status(403).json({ error: "owner_only" });
+      if (!cached || now() - cached.at >= 25000) {
+        if (!pending) pending = readReport().then(data => { cached = { at: now(), data }; return data; }).finally(() => { pending = undefined; });
+        await pending;
+      }
+      return res.status(200).json(cached.data);
+    } catch (error) {
+      // Do not expose upstream bodies, credentials or authorization headers.
+      return res.status(error.status || 502).json({ error: error.code || "analytics_unavailable" });
+    }
+  };
+}
+module.exports = createHandler();
+module.exports.createHandler = createHandler;

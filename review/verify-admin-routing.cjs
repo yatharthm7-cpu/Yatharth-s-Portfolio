@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.join(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'admin', 'index.html'), 'utf8');
-const expectedAssets = ['/styles.css', '/admin/admin.css', '/content-config.js', '/admin/admin.js'];
+const expectedAssets = ['/styles.css', '/admin/admin.css', '/content-config.js', '/admin/live-tracking.js', '/admin/admin.js'];
 const localAssets = [...html.matchAll(/(?:href|src)="([^"]+\.(?:css|js))"/g)]
   .map(match => match[1]).filter(value => !value.startsWith('https://'));
 assert.deepEqual(localAssets, expectedAssets);

@@ -27,6 +27,7 @@
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
   });
   var input = function (id) { return document.getElementById(id); };
+  var liveTracking = window.createLiveTracking ? window.createLiveTracking(client) : { start: function () {}, stop: function () {} };
 
   function validUrl(value, allowAnchor) {
     if (allowAnchor && /^#[a-z][a-z0-9-]*$/i.test(value)) return true;
@@ -127,6 +128,7 @@
     var result = await client.auth.getUser();
     var user = result.data && result.data.user;
     if (!user || !user.email || user.email.toLowerCase() !== OWNER_EMAIL) {
+      liveTracking.stop();
       loginPanel.hidden = false;
       editorPanel.hidden = true;
       signOutButton.hidden = true;
@@ -140,6 +142,7 @@
     editorPanel.hidden = false;
     signOutButton.hidden = false;
     input("signedInEmail").textContent = user.email;
+    liveTracking.start();
     try { await loadEntries(); } catch { message("Could not load content. Please try again.", "error"); }
   }
 
@@ -163,6 +166,7 @@
   });
 
   signOutButton.addEventListener("click", async function () {
+    liveTracking.stop();
     await client.auth.signOut();
     state.entries = [];
     await showSession();
