@@ -47,11 +47,15 @@ function createHandler({ fetcher = fetch, env = process.env, now = Date.now, goo
         })
       });
       if (!response.ok) {
+        console.warn("analytics_report_failed", { status: response.status, report: body.dimensions?.[0]?.name || "totals" });
         if (response.status === 403) throw fail(503, "analytics_access_required");
         if (response.status === 429) throw fail(429, "analytics_rate_limited");
         throw fail(502, "analytics_unavailable");
       }
-      if (!Array.isArray(data.metricHeaders) || data.metricHeaders.length !== body.metrics.length || data.metricHeaders.some((header, index) => header.name !== body.metrics[index].name) || (data.rows !== undefined && !Array.isArray(data.rows))) throw fail(502, "analytics_unavailable");
+      if (!Array.isArray(data.metricHeaders) || data.metricHeaders.length !== body.metrics.length || data.metricHeaders.some((header, index) => header.name !== body.metrics[index].name) || (data.rows !== undefined && !Array.isArray(data.rows))) {
+        console.warn("analytics_report_schema_failed", { report: body.dimensions?.[0]?.name || "totals" });
+        throw fail(502, "analytics_unavailable");
+      }
       return data;
     }
     const reports = await Promise.all([
@@ -105,6 +109,7 @@ function createHandler({ fetcher = fetch, env = process.env, now = Date.now, goo
       }
       return res.status(200).json(cached.data);
     } catch (error) {
+      if (!error.code) console.warn("analytics_request_failed", { kind: error.name === "TimeoutError" ? "timeout" : error.name === "TypeError" ? "network" : "unexpected" });
       // Do not expose upstream bodies, credentials or authorization headers.
       return res.status(error.status || 502).json({ error: error.code || "analytics_unavailable" });
     }
