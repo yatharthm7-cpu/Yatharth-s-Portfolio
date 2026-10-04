@@ -23,7 +23,9 @@ function createHandler({ fetcher = fetch, env = process.env, now = Date.now } = 
   // Supabase's current sb_secret_ keys replace the legacy service_role JWT. Keep
   // the fallback so existing deployments continue working during migration.
   const supabaseKey = env.SUPABASE_SECRET_KEY || env.SUPABASE_SERVICE_ROLE_KEY;
-  const isLegacyServiceRole = !env.SUPABASE_SECRET_KEY && Boolean(env.SUPABASE_SERVICE_ROLE_KEY);
+  // Detect the credential format rather than trusting the environment-variable name:
+  // this also survives a value being placed under the old name during migration.
+  const isLegacyServiceRole = Boolean(supabaseKey && !String(supabaseKey).startsWith("sb_secret_"));
 
   function fail(status, code, fields) {
     const error = new Error(code);

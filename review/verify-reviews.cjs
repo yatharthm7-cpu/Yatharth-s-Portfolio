@@ -97,6 +97,13 @@ async function submit(overrides, options) {
   assert.equal(secretRequest.headers.apikey, "sb_secret_test");
   assert.equal(secretRequest.headers.Authorization, undefined);
 
+  /* Key format wins over the variable name during migration. */
+  ({ res, fetcher } = await submit({}, { env: { SUPABASE_SERVICE_ROLE_KEY: "sb_secret_saved_under_old_name" } }));
+  assert.equal(res.statusCode, 201);
+  const migratedRequest = fetcher.calls.requests.find(call => call.url.includes("/rest/v1/reviews"));
+  assert.equal(migratedRequest.headers.apikey, "sb_secret_saved_under_old_name");
+  assert.equal(migratedRequest.headers.Authorization, undefined);
+
   /* Method and shape guards. */
   ({ res } = await submit({}, { method: "GET" }));
   assert.equal(res.statusCode, 405);
