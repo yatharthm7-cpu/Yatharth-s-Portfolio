@@ -5,7 +5,7 @@ const PROPERTY_ID = "557081748";
 const STREAM_ID = "15941294569";
 const OWNER_EMAIL = "yatharth@scaleupbiz.co.in";
 const SUPABASE_URL = "https://ccttomyjutpppemvtvfk.supabase.co";
-const PUBLISHABLE_KEY = "sb_publishable_5_X0dNFzo0sLPC0oPUOE7A_IIkmG1lG";
+const PUBLISHABLE_KEY = "sb_publishable_HG19YDyxFlHtmK9brGlV1Q_2kJHRLs1";
 const FEDERATION_AUDIENCE = "//iam.googleapis.com/projects/979369476930/locations/global/workloadIdentityPools/scaleupbiz-vercel/providers/vercel";
 const READER_EMAIL = "scaleupbiz-analytics-reader@scaleupbiz-analytics.iam.gserviceaccount.com";
 
