@@ -54,6 +54,9 @@ function createHandler({ fetcher = fetch, env = process.env, now = Date.now } = 
     });
     if (!response.ok) {
       console.warn("reviews_upstream_failed", { status: response.status, step: path.split("?")[0] });
+      if (response.status === 401) throw fail(502, "supabase_key_rejected");
+      if (response.status === 403) throw fail(502, "supabase_access_denied");
+      if (response.status === 404) throw fail(502, "reviews_table_unavailable");
       throw fail(response.status >= 500 ? 503 : 502, "review_service_unavailable");
     }
     return response;

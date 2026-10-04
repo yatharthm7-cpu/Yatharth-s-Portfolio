@@ -11,10 +11,13 @@ const read = name => fs.readFileSync(path.join(root, name), "utf8");
 const { createHandler } = require(path.join(root, "api", "reviews.js"));
 const NOW = 1759500000000;
 
-function makeFetcher({ existingRows = [], insertFails = false } = {}) {
+function makeFetcher({ existingRows = [], insertFails = false, upstreamStatus = 0 } = {}) {
   const calls = { requests: [], inserted: null };
   const fetcher = async function (url, options = {}) {
     calls.requests.push({ url: String(url), method: options.method || "GET", headers: options.headers || {} });
+    if (upstreamStatus && String(url).includes("/rest/v1/reviews")) {
+      return { ok: false, status: upstreamStatus, json: async () => ({}) };
+    }
     if (String(url).includes("/rest/v1/reviews") && (options.method || "GET") === "GET") {
       return { ok: true, status: 200, json: async () => existingRows };
     }
@@ -103,6 +106,16 @@ async function submit(overrides, options) {
   const migratedRequest = fetcher.calls.requests.find(call => call.url.includes("/rest/v1/reviews"));
   assert.equal(migratedRequest.headers.apikey, "sb_secret_saved_under_old_name");
   assert.equal(migratedRequest.headers.Authorization, undefined);
+
+  /* Safe diagnostic categories identify configuration failures without exposing
+     credentials or database response bodies. */
+  ({ res } = await submit({}, { fetcher: { upstreamStatus: 401 } }));
+  assert.equal(res.statusCode, 502);
+  assert.equal(res.body.error, "supabase_key_rejected");
+  ({ res } = await submit({}, { fetcher: { upstreamStatus: 403 } }));
+  assert.equal(res.body.error, "supabase_access_denied");
+  ({ res } = await submit({}, { fetcher: { upstreamStatus: 404 } }));
+  assert.equal(res.body.error, "reviews_table_unavailable");
 
   /* Method and shape guards. */
   ({ res } = await submit({}, { method: "GET" }));
