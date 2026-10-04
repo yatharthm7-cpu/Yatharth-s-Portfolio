@@ -271,6 +271,8 @@ async function submit(overrides, options) {
   assert(reviewsJs.includes("opener.focus()") || reviewsJs.includes("lastFocus.focus()"), "Focus returns to the opening button.");
   assert(reviewsJs.includes('document.querySelector(".analytics-choice")'), "The analytics choice is inert with the modal background.");
   assert(read("reviews.css").includes("body.review-modal-open .analytics-choice"), "The analytics choice cannot overlap the review dialog.");
+  assert(reviewsJs.includes('get("review")') && reviewsJs.includes('reviewRequest === "tapvora"'), "Tapvora campaign link opens the review form directly.");
+  assert(reviewsJs.includes('projectInput.value = "Tapvora NFC Review Card"'), "Tapvora campaign link pre-fills the reviewed product.");
   assert(reviewsJs.includes("client@example.com") === false);
 
   const analytics = read("analytics.js");

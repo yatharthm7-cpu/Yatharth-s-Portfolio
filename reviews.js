@@ -246,6 +246,14 @@
   }
 
   opener.addEventListener("click", openModal);
+  /* Shareable campaign links can open the form directly and identify the product
+     without collecting personal information in the URL. */
+  var reviewRequest = new URLSearchParams(window.location.search).get("review");
+  if (reviewRequest === "tapvora") {
+    var projectInput = document.getElementById("reviewProject");
+    if (projectInput && !projectInput.value) projectInput.value = "Tapvora NFC Review Card";
+    openModal();
+  }
   modal.addEventListener("click", function (event) {
     if (event.target.closest("[data-review-close]")) closeModal();
   });
