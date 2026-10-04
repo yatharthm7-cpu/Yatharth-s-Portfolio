@@ -40,6 +40,8 @@
     input("projectsTab").setAttribute("aria-selected", String(kind === "project"));
     input("servicesTab").setAttribute("aria-selected", String(kind === "service"));
     input("faqsTab").setAttribute("aria-selected", String(kind === "faq"));
+    var reviewsTab = input("reviewsTab");
+    if (reviewsTab) reviewsTab.setAttribute("aria-selected", "false");
     input("listHeading").textContent = kind === "project" ? "Projects" : kind === "service" ? "Services" : "FAQ questions";
     input("formEyebrow").textContent = kind === "project" ? "Project editor" : kind === "service" ? "Service editor" : "Question editor";
     input("projectFields").hidden = kind !== "project";
@@ -174,7 +176,14 @@
   });
 
   [input("projectsTab"), input("servicesTab"), input("faqsTab")].forEach(function (tab) {
-    tab.addEventListener("click", function () { setKind(tab.dataset.kind); });
+    tab.addEventListener("click", function () {
+      /* Leaving the reviews tab returns to the content desk. */
+      var reviewsPanel = document.getElementById("reviewsPanel");
+      var layout = document.querySelector(".admin-layout");
+      if (reviewsPanel) reviewsPanel.hidden = true;
+      if (layout) layout.hidden = false;
+      setKind(tab.dataset.kind);
+    });
   });
   input("addEntry").addEventListener("click", function () { resetForm(); input("entryTitle").focus(); });
   input("resetEntry").addEventListener("click", resetForm);

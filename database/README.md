@@ -10,4 +10,8 @@ For the existing database, run `portfolio-add-faq.sql` once in the **Yatharth Po
 
 If the owner email changes, update the five policy references here and in `admin/admin.js`, then run `portfolio-update-owner-email.sql` once in the Supabase SQL Editor. That migration only drops and recreates the policies — it does not create or change an auth user, so also add the new address under Authentication → Users before signing in with it.
 
+## Client reviews
+
+Run `portfolio-reviews.sql` once in the same project's SQL Editor before using the review system. It creates the `reviews` table with a `pending`/`approved`/`rejected` status, an `updated_at` trigger, row-level security, and column grants: anonymous visitors may select only the public fields of approved rows (never `client_email`), and there is deliberately no anon insert policy — submissions arrive only through the `/api/reviews` Vercel function, which validates them server-side and writes them with a current secret key (`SUPABASE_SECRET_KEY`). The older `SUPABASE_SERVICE_ROLE_KEY` remains a temporary fallback for an existing deployment. The owner reads and moderates every field in the dashboard's **Reviews** tab through their own authenticated session; approving sets `status='approved'` and `published_at`, which is what makes a row visible to the public query the website uses.
+
 The database limits editing to the verified owner email through row-level security. The public client fetches published entries only. The `portfolio-images` bucket serves public portfolio images and permits uploads only from the owner. To add editable content types later, extend the table's `kind` constraint, the admin editor, and the public renderer together.

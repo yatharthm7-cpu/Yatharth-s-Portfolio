@@ -1,0 +1,57 @@
+/* Restrained premium motion: thin scroll-progress line, the scroll-to-open testimonial
+   reveal, and shared state for pointer tilt. Everything animates transform and opacity
+   only, runs once per load, and native scrolling is never altered. */
+
+.scroll-progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 160;
+  background: var(--accent); transform-origin: 0 50%; transform: scaleX(0);
+  pointer-events: none;
+}
+
+/* Decorative frame used by the testimonial entrance. Inserted by motion.js. */
+#testimonials .container { position: relative; }
+.testimonial-frame {
+  position: absolute; z-index: 0;
+  inset: clamp(14px, 2.5vw, 30px) clamp(2px, 1vw, 14px);
+  border: 1px solid rgba(243, 240, 233, 0.34); border-radius: 24px;
+  pointer-events: none; opacity: 0; transform-origin: 50% 0;
+}
+@media (max-width: 640px) {
+  .testimonial-frame { display: none; }
+}
+
+/* =========================================================
+   Scroll-to-open reveal — armed before the section is reached,
+   played once, purely decorative. Without JavaScript or with
+   prefers-reduced-motion none of these states apply.
+   ========================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  .testimonial-armed .section-head .eyebrow,
+  .testimonial-armed .section-head h2,
+  .testimonial-armed .testimonial-head-side { opacity: 0; transform: translateY(18px); }
+  .testimonial-armed .testimonial-showcase .testimonial-card { opacity: 0; }
+  .testimonial-armed .client-reviews { opacity: 0; }
+
+  .testimonial-armed.is-opened .section-head .eyebrow { opacity: 1; transform: none; transition: opacity 0.5s ease 0.1s, transform 0.5s var(--ease) 0.1s; }
+  .testimonial-armed.is-opened .section-head h2 { opacity: 1; transform: none; transition: opacity 0.55s ease 0.22s, transform 0.55s var(--ease) 0.22s; }
+  .testimonial-armed.is-opened .testimonial-head-side { opacity: 1; transform: none; transition: opacity 0.55s ease 0.36s, transform 0.55s var(--ease) 0.36s; }
+  .testimonial-armed.is-opened .testimonial-frame { animation: testimonial-frame-open 1.1s var(--ease) forwards; }
+  .testimonial-armed.is-opened .testimonial-showcase .testimonial-card {
+    opacity: 1; animation: deck-card-rise 0.7s var(--ease) both;
+    animation-delay: calc(0.5s + var(--card-index, 0) * 0.12s);
+  }
+  .testimonial-armed.is-opened .client-reviews { opacity: 1; transition: opacity 0.6s ease 0.7s; }
+}
+@keyframes testimonial-frame-open {
+  0% { opacity: 0; transform: perspective(1100px) rotateX(-70deg); }
+  28% { opacity: 1; }
+  58% { opacity: 1; transform: perspective(1100px) rotateX(0deg); }
+  100% { opacity: 0; transform: perspective(1100px) rotateX(0deg); }
+}
+/* Cards rise vertically out of the deck's own resting transform; the composition is
+   resolved per card through its CSS variables. Mobile gets the same opacity + vertical
+   movement because the decorative frame is hidden above 640px only. */
+@keyframes deck-card-rise {
+  from { opacity: 0; transform: translateY(30px) translate(var(--card-x, 0px), var(--card-y, 0px)) skewY(-8deg) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); }
+  to { opacity: 1; transform: translateY(0) translate(var(--card-x, 0px), var(--card-y, 0px)) skewY(-8deg) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); }
+}

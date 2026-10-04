@@ -94,6 +94,8 @@
   <link rel="stylesheet" href="circular-nav.css" />
   <link rel="stylesheet" href="faq.css" />
   <link rel="stylesheet" href="testimonial-cards.css" />
+  <link rel="stylesheet" href="reviews.css" />
+  <link rel="stylesheet" href="motion.css" />
   <link rel="stylesheet" href="/analytics.css" />
   <link rel="icon" href="/assets/favicon.png" type="image/png" sizes="96x96" />
 </head>
@@ -362,12 +364,15 @@
       <div class="container">
         <div class="section-head section-head-row">
           <div><p class="eyebrow">Client words</p><h2 id="testimonials-heading">What clients<br /><span>said afterwards.</span></h2></div>
-          <p class="section-note">Real feedback from the people behind the projects above.</p>
+          <div class="testimonial-head-side">
+            <p class="section-note">Real feedback from the people behind the projects above.</p>
+            <button type="button" class="btn btn-ghost review-open" id="reviewOpenButton" aria-haspopup="dialog" aria-controls="reviewModal">Leave a review <span aria-hidden="true">↗</span></button>
+          </div>
         </div>
         <!-- Twitter Testimonial Cards by rxxndy (21st.dev), adapted for client feedback. -->
         <div class="testimonial-showcase" data-testimonial-showcase>
         <div class="testimonials-grid" aria-label="Client feedback cards">
-          <figure class="testimonial-card" id="testimonial-shakti" data-card-index="0">
+          <figure class="testimonial-card" id="testimonial-shakti" data-card-index="0" data-tilt>
             <div class="testimonial-header">
               <span class="testimonial-avatar" aria-hidden="true">SM</span>
               <div><span class="testimonial-name">Shakti Mathiya</span><span class="testimonial-role">Food &amp; product catalog</span></div>
@@ -379,7 +384,7 @@
               <a class="testimonial-link" href="https://shakti-mathiya.vercel.app/" target="_blank" rel="noopener noreferrer">View project <span aria-hidden="true">↗</span></a>
             </figcaption>
           </figure>
-          <figure class="testimonial-card" id="testimonial-anaya" data-card-index="1">
+          <figure class="testimonial-card" id="testimonial-anaya" data-card-index="1" data-tilt>
             <div class="testimonial-header">
               <span class="testimonial-avatar" aria-hidden="true">AK</span>
               <div><span class="testimonial-name">Anaya’s Kitchen</span><span class="testimonial-role">Restaurant website</span></div>
@@ -391,7 +396,7 @@
               <a class="testimonial-link" href="https://anaya-kitchen.vercel.app/" target="_blank" rel="noopener noreferrer">View project <span aria-hidden="true">↗</span></a>
             </figcaption>
           </figure>
-          <figure class="testimonial-card" id="testimonial-anoobie" data-card-index="2">
+          <figure class="testimonial-card" id="testimonial-anoobie" data-card-index="2" data-tilt>
             <div class="testimonial-header">
               <span class="testimonial-avatar" aria-hidden="true">AC</span>
               <div><span class="testimonial-name">aNoobieCooKie</span><span class="testimonial-role">Community portfolio</span></div>
@@ -409,6 +414,15 @@
           <button type="button" data-select-card="1" aria-controls="testimonial-anaya" aria-pressed="false"><span>02</span> Anaya’s Kitchen</button>
           <button type="button" data-select-card="2" aria-controls="testimonial-anoobie" aria-pressed="true"><span>03</span> aNoobieCooKie</button>
         </div>
+        </div>
+        <!-- Approved, rated client reviews continue the section. Populated from the
+             database by reviews.js; stays hidden when the database is unreachable. -->
+        <div class="client-reviews" id="clientReviews" hidden aria-labelledby="clientReviewsHeading">
+          <div class="client-reviews-head">
+            <h3 id="clientReviewsHeading">More client feedback</h3>
+            <p class="reviews-average" id="reviewsAverage" hidden></p>
+          </div>
+          <div class="reviews-grid" id="reviewsGrid"></div>
         </div>
       </div>
     </section>
@@ -588,6 +602,85 @@
     </div>
     <div class="container footer-bar"><p>&copy; <span id="year">2026</span> Yatharth Rupesh Mehta.</p><p><a href="/privacy.html">Privacy</a> · <button type="button" class="analytics-settings" data-analytics-settings hidden>Analytics settings</button></p><p>Based in India. Working worldwide.</p></div>
   </footer>
+
+  <!-- Review form dialog. Opened by "Leave a review"; submissions go to /api/reviews and
+       stay pending until the owner approves them in /admin/. Content is plain text only. -->
+  <div class="review-modal" id="reviewModal" hidden>
+    <div class="review-backdrop" data-review-close></div>
+    <div class="review-dialog" role="dialog" aria-modal="true" aria-labelledby="reviewDialogTitle" aria-describedby="reviewDialogIntro" tabindex="-1">
+      <button type="button" class="review-close" data-review-close aria-label="Close review form">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+      </button>
+      <form id="reviewForm" class="review-form" autocomplete="off">
+        <h2 id="reviewDialogTitle">Leave a review</h2>
+        <p class="review-intro" id="reviewDialogIntro">Worked with ScaleUpBiz? Share how it went. Every review is read and verified before anything appears on this page.</p>
+        <div class="review-error" id="reviewError" role="alert" hidden></div>
+
+        <fieldset class="review-field review-rating-field">
+          <legend>Your rating <span class="review-requirement">Required</span></legend>
+          <div class="review-stars-input" id="ratingGroup">
+            <label class="review-star"><input type="radio" name="rating" value="1" required /><span class="star-glyph" aria-hidden="true">★</span><span class="visually-hidden">1 star</span></label>
+            <label class="review-star"><input type="radio" name="rating" value="2" /><span class="star-glyph" aria-hidden="true">★</span><span class="visually-hidden">2 stars</span></label>
+            <label class="review-star"><input type="radio" name="rating" value="3" /><span class="star-glyph" aria-hidden="true">★</span><span class="visually-hidden">3 stars</span></label>
+            <label class="review-star"><input type="radio" name="rating" value="4" /><span class="star-glyph" aria-hidden="true">★</span><span class="visually-hidden">4 stars</span></label>
+            <label class="review-star"><input type="radio" name="rating" value="5" /><span class="star-glyph" aria-hidden="true">★</span><span class="visually-hidden">5 stars</span></label>
+          </div>
+          <p class="review-rating-live" id="ratingLive" aria-live="polite"></p>
+        </fieldset>
+
+        <div class="review-field">
+          <label for="reviewName">Your name <span class="review-requirement">Required</span></label>
+          <input type="text" id="reviewName" name="client_name" maxlength="80" required autocomplete="name" />
+        </div>
+        <div class="review-field-row">
+          <div class="review-field">
+            <label for="reviewBusiness">Business or organisation <span class="review-optional">Optional</span></label>
+            <input type="text" id="reviewBusiness" name="business_name" maxlength="100" autocomplete="organization" />
+          </div>
+          <div class="review-field">
+            <label for="reviewProject">Project or service <span class="review-optional">Optional</span></label>
+            <input type="text" id="reviewProject" name="project_name" maxlength="100" placeholder="Website Development, NFC Card Design…" />
+          </div>
+        </div>
+        <div class="review-field">
+          <label for="reviewText">Your review <span class="review-requirement">Required</span></label>
+          <textarea id="reviewText" name="review_text" rows="5" minlength="40" maxlength="700" required placeholder="What did we build together, and how did it go?"></textarea>
+          <div class="review-count-row">
+            <span class="review-count-hint">Between 40 and 700 characters.</span>
+            <span class="review-count" id="reviewCount" aria-live="polite">0 of 700</span>
+          </div>
+        </div>
+        <div class="review-field">
+          <label for="reviewEmail">Email address <span class="review-requirement">Required</span></label>
+          <input type="email" id="reviewEmail" name="client_email" maxlength="254" required autocomplete="email" />
+          <p class="review-field-note">Used only to verify that this was a real project. It is never shown publicly or sent to analytics.</p>
+        </div>
+        <div class="review-field review-consent">
+          <label class="review-consent-label">
+            <input type="checkbox" id="reviewConsent" name="consent_to_publish" required />
+            <span>I give ScaleUpBiz permission to display this feedback publicly after verification.</span>
+          </label>
+        </div>
+        <!-- Honeypot: visually removed and hidden from assistive technology; bots that
+             fill it receive a fake success and nothing is stored. -->
+        <div class="review-hp" aria-hidden="true">
+          <label for="reviewWebsite">Leave this field empty</label>
+          <input type="text" id="reviewWebsite" name="website" tabindex="-1" autocomplete="off" />
+        </div>
+        <div class="review-turnstile" id="reviewTurnstile" hidden></div>
+        <div class="review-actions">
+          <button type="submit" class="btn btn-accent btn-block" id="reviewSubmit">Submit review <span aria-hidden="true">↗</span></button>
+          <p class="review-submit-note">A review appears on this page only after ScaleUpBiz has verified and approved it. Nothing is published automatically.</p>
+        </div>
+      </form>
+      <div class="review-success" id="reviewSuccess" role="status" hidden>
+        <span class="review-success-mark" aria-hidden="true">✓</span>
+        <p class="review-success-copy">Thank you. Your review has been submitted for verification. It will not appear publicly until it has been reviewed.</p>
+        <button type="button" class="btn btn-ghost" data-review-close>Close</button>
+      </div>
+    </div>
+  </div>
+
   <script src="intro.js"></script>
   <script src="/analytics.js"></script>
   <script src="script.js"></script>
@@ -596,5 +689,7 @@
   <script src="portfolio-content.js"></script>
   <script src="faq.js"></script>
   <script src="testimonial-cards.js"></script>
+  <script src="motion.js"></script>
+  <script src="reviews.js"></script>
 </body>
 </html>

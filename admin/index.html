@@ -65,12 +65,65 @@
         <details id="trackingSetup" class="tracking-setup" hidden><summary>Check the private report connection</summary><p>This dashboard uses a secure, keyless connection from the production website to Google Analytics. Its reader needs Viewer access to the ScaleUpBiz property. Check the connection settings if reports are unavailable; no private key needs to be uploaded.</p><a href="https://vercel.com/docs/oidc/gcp" target="_blank" rel="noopener noreferrer">Secure connection guide ↗</a></details>
       </section>
 
+      <!-- Review moderation: pending first; the website shows a review only after approval. -->
+      <section id="reviewsPanel" class="admin-reviews" hidden aria-labelledby="reviewsTitle">
+        <div class="admin-reviews-head">
+          <div>
+            <p class="eyebrow">Moderation</p>
+            <h2 id="reviewsTitle">Client reviews</h2>
+            <p class="admin-note">Nothing appears on the website until you approve it here. Approving publishes the client's words exactly as saved — fix spelling, never the meaning. Client emails stay private.</p>
+          </div>
+          <button type="button" class="btn btn-ghost" id="reviewsRefresh">Refresh</button>
+        </div>
+        <div id="reviewsList" class="reviews-moderation-list"></div>
+        <p id="reviewsEmpty" class="admin-empty" hidden>No reviews yet. One appears here the moment a client submits it.</p>
+
+        <div id="reviewEditor" class="review-editor" hidden>
+          <div class="review-editor-head">
+            <div>
+              <p class="review-editor-stars" id="reviewEditorStars" aria-hidden="true"></p>
+              <h3 id="reviewEditorName"></h3>
+              <p class="review-editor-meta" id="reviewEditorMeta"></p>
+            </div>
+            <span class="admin-badge" id="reviewEditorStatus"></span>
+          </div>
+          <div class="review-editor-grid">
+            <label class="admin-field">Client name <input id="reviewEditName" type="text" maxlength="80" /></label>
+            <label class="admin-field">Business or organisation <input id="reviewEditBusiness" type="text" maxlength="100" /></label>
+            <label class="admin-field">Project or service <input id="reviewEditProject" type="text" maxlength="100" /></label>
+            <label class="admin-field">Display order <input id="reviewEditOrder" type="number" min="0" max="999" /><small>Lower numbers appear first on the website.</small></label>
+          </div>
+          <label class="admin-field">Review <textarea id="reviewEditText" rows="5" maxlength="700"></textarea><small>Correct spelling or formatting only — never rewrite the client's meaning.</small></label>
+          <div class="review-editor-grid">
+            <label class="admin-field">Client email <input id="reviewEditEmail" type="email" readonly /><small>Private. Used to verify the project; never shown on the website.</small></label>
+            <label class="admin-switch review-switch"><input id="reviewEditVerified" type="checkbox" /><span>Verified client</span></label>
+          </div>
+          <p class="admin-note" id="reviewConsentNote"></p>
+          <div class="review-editor-actions">
+            <button type="button" class="btn btn-accent" id="reviewApprove">Approve &amp; publish</button>
+            <button type="button" class="btn btn-ghost" id="reviewUnpublish" hidden>Unpublish</button>
+            <button type="button" class="btn btn-ghost" id="reviewReject">Reject</button>
+            <button type="button" class="admin-quiet" id="reviewSave">Save changes</button>
+            <button type="button" class="admin-quiet review-delete" id="reviewDelete">Delete…</button>
+          </div>
+          <div class="review-confirm" id="reviewDeleteConfirm" hidden>
+            <p>Delete this review permanently? This cannot be undone.</p>
+            <div class="review-confirm-actions">
+              <button type="button" class="btn btn-ghost" id="reviewDeleteYes">Yes, delete permanently</button>
+              <button type="button" class="admin-quiet" id="reviewDeleteNo">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <p id="reviewsStatus" class="admin-inline-status" role="status" aria-live="polite"></p>
+      </section>
+
       <div class="admin-layout">
         <aside class="admin-sidebar" aria-label="Content list">
           <div class="admin-tabs" role="tablist" aria-label="Content type">
             <button type="button" id="projectsTab" role="tab" aria-selected="true" data-kind="project">Projects <span id="projectCount">0</span></button>
             <button type="button" id="servicesTab" role="tab" aria-selected="false" data-kind="service">Services <span id="serviceCount">0</span></button>
             <button type="button" id="faqsTab" role="tab" aria-selected="false" data-kind="faq">FAQ <span id="faqCount">0</span></button>
+            <button type="button" id="reviewsTab" role="tab" aria-selected="false" data-kind="reviews">Reviews <span id="reviewsCount">0</span></button>
           </div>
           <div class="admin-sidebar-head"><h2 id="listHeading">Projects</h2><button type="button" id="addEntry" class="admin-add">+ Add new</button></div>
           <div id="entryList" class="admin-list"></div>
@@ -125,5 +178,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1" defer></script>
   <script src="/admin/live-tracking.js" defer></script>
   <script src="/admin/admin.js" defer></script>
+  <script src="/admin/reviews.js" defer></script>
 </body>
 </html>

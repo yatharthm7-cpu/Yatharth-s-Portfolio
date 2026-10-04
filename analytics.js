@@ -93,7 +93,10 @@
   window.ScaleUpAnalytics = {
     trackLead: function (page) {
       if (["portfolio", "website_development"].indexOf(page) !== -1) track("generate_lead", { page_type: page, contact_method: "form" });
-    }
+    },
+    // Named events only (review_form_open, review_submit_success, review_submit_failure).
+    // Review text, names and email addresses never enter event parameters.
+    track: track
   };
   if (choice === "accepted") start();
   else if (choice !== "rejected") notice.hidden = false;

@@ -26,11 +26,11 @@
   --card-width: 390px; --step-x: 72px;
   display: grid; grid-template-areas: "stack"; grid-template-columns: 1fr; gap: 0;
   position: relative; width: 560px; max-width: 100%; min-height: 540px;
-  padding: 42px 0 220px; margin-inline: auto;
+  padding: 42px 0 220px; margin-inline: auto; perspective: 1400px;
 }
 .testimonial-showcase.is-enhanced .testimonial-card {
   grid-area: stack; align-self: start; width: var(--card-width); max-width: 100%; min-height: 270px;
-  position: relative; z-index: 1; transform: translate(var(--card-x, 0px), var(--card-y, 0px)) skewY(-8deg);
+  position: relative; z-index: 1; transform: translate(var(--card-x, 0px), var(--card-y, 0px)) skewY(-8deg) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
   transform-origin: center; box-shadow: 0 12px 32px #0003;
   transition: transform 0.5s var(--ease), border-color 0.3s, box-shadow 0.3s;
 }

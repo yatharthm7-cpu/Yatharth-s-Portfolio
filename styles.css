@@ -380,3 +380,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   *, *::before, *::after { transition: none !important; animation: none !important; }
   .nfc-card-face { transform: none !important; }
 }
+/* Micro-interactions outside the pinned sections: service cards rise slightly and
+   button arrows nudge toward their destination, on desktop pointers only. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .service-card { transition: transform 0.35s var(--ease), border-color 0.35s, box-shadow 0.35s; }
+  .service-card:hover { transform: translateY(-4px); border-color: #76658f; box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18); }
+  .btn span[aria-hidden="true"] { display: inline-block; transition: transform 0.25s var(--ease); }
+  .btn:hover span[aria-hidden="true"] { transform: translateX(3px); }
+}
