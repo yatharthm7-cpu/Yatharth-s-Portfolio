@@ -2,8 +2,8 @@
    Design tokens and shared components (.container, .section, .btn, .eyebrow,
    .text-link, .faq-*) come from /styles.css and /faq.css. */
 
-/* Brand mark: the ScaleUpBiz tile logo on the shared navbar. */
-.wd-brand img { height: 40px; width: auto; border-radius: 10px; border: 1px solid #38383f; display: block; }
+/* The shared brand lockup uses the approved ScaleUpBiz tile. */
+.wd-brand .brand-logo { border: 1px solid var(--border); }
 
 /* Header navigation: three cross-page links plus the primary action. */
 .wd-nav { display: flex; align-items: center; gap: 4px; }
@@ -137,6 +137,7 @@ html:not(.wd-js) .faq-icon { display: none; }
 @media (max-width: 640px) {
   .nav-inner { gap: 12px; }
   .wd-nav { display: none; }
+  .navbar .wd-brand .brand-name { display: none; }
   .wd-nav-cta { margin-left: auto; }
   .wd-hero { padding-bottom: 72px; }
   .wd-visual { padding: 0 0 30px 0; }
@@ -154,7 +155,6 @@ html:not(.wd-js) .faq-icon { display: none; }
 }
 
 @media (max-width: 380px) {
-  .wd-brand img { height: 34px; }
   .wd-nav-cta { padding: 10px 12px; font-size: 0.78rem; }
   .wd-hero h1 { font-size: 2.35rem; }
 }

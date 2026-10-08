@@ -89,8 +89,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 /* Minimalist Hero: portrait + circle, generous typography, quiet navigation. */
 .navbar { position: sticky; top: 0; z-index: 100; background: rgba(20,20,22,0.97); border-bottom: 1px solid #303035; }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 84px; }
-.brand { font: 600 1.45rem/1 var(--font-display); letter-spacing: -0.05em; min-height: 44px; display: inline-flex; align-items: center; }
+.brand { font: 600 1.45rem/1 var(--font-display); letter-spacing: -0.05em; min-height: 44px; display: inline-flex; align-items: center; gap: 12px; flex-shrink: 0; }
 .brand span { color: var(--accent); }
+.brand .brand-name { color: var(--text); white-space: nowrap; }
+.brand-logo { width: 56px; height: 56px; object-fit: contain; border-radius: 12px; flex-shrink: 0; }
+.intro-topline .intro-brand { display: inline-flex; align-items: center; gap: 12px; font: 600 1.15rem/1 var(--font-display); letter-spacing: -0.04em; }
+@media (max-width: 600px) {
+  .brand { font-size: 1.15rem; }
+  .brand-logo { width: 44px; height: 44px; border-radius: 10px; }
+}
 /* Desktop: the circular dial IS the navigation, so the link bar stays hidden. */
 .nav-links { display: none; align-items: center; gap: 26px; }
 .nav-links > a { color: var(--text-2); font-size: 0.875rem; display: inline-flex; align-items: center; min-height: 44px; }
