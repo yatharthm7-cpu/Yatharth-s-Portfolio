@@ -15,4 +15,16 @@ for (const route of ['/admin', '/admin?', '/admin/', '/admin/?next=editor', '/ad
     assert(fs.existsSync(path.join(root, asset.slice(1))), `Missing asset: ${asset}`);
   }
 }
-console.log('PASS: admin assets resolve correctly with or without a trailing slash and query string.');
+
+/* Every reachable admin URL shape carries a noindex header, not just the HTML
+   page's own meta tag. /admin/:path* does not match the bare "/admin/", which is
+   why it needs its own entry. */
+const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
+const noindexSources = vercel.headers
+  .filter(entry => entry.headers.some(header => header.key === 'X-Robots-Tag' && /noindex/.test(header.value)))
+  .map(entry => entry.source);
+for (const source of ['/admin', '/admin/', '/admin/:path*']) {
+  assert.ok(noindexSources.includes(source), `noindex header covers ${source}`);
+}
+
+console.log('PASS: admin assets resolve correctly with or without a trailing slash and query string, and every admin URL carries a noindex header.');

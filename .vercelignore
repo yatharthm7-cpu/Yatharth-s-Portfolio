@@ -1,0 +1,11 @@
+# Development-only artifacts. Excluded from every deployment so they are never
+# downloadable from the production site. None of them are requested at runtime by
+# the public pages, the admin dashboard, or the server functions in /api.
+#
+# Kept locally for schema setup, verification and audit work.
+database/
+review/
+
+# Social-content source material. Nothing on the website reads this directory.
+# Public branding assets live directly under /branding and stay deployed.
+branding/instagram/

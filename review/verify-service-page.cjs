@@ -131,13 +131,18 @@ assert.match(sitemap, /<loc>https:\/\/scaleupbiz\.co\.in\/website-development\/<
 const robots = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8');
 assert.match(robots, /Sitemap: https:\/\/scaleupbiz\.co\.in\/sitemap\.xml/);
 
-/* Vercel routing: new rewrite added, existing rules untouched */
+/* Vercel routing: the bare route permanently redirects to the canonical trailing-slash URL */
 const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
 const rewrites = vercel.rewrites.map((r) => r.source);
-assert.ok(rewrites.includes('/website-development'), 'rewrite for the bare route');
+const redirects = vercel.redirects.map((r) => r.source);
+assert.ok(redirects.includes('/website-development'), 'permanent redirect for the bare route');
+const serviceRedirect = vercel.redirects.find((r) => r.source === '/website-development');
+assert.equal(serviceRedirect.destination, '/website-development/', 'redirect targets the canonical URL');
+assert.equal(serviceRedirect.permanent, true, 'redirect is permanent');
+assert.ok(!rewrites.includes('/website-development'), 'bare route is redirected, not rewritten');
 assert.ok(rewrites.includes('/website-development/'), 'rewrite for the trailing-slash route');
 assert.ok(rewrites.includes('/admin'), 'admin rewrite preserved');
-assert.ok(vercel.redirects.some((r) => r.source === '/index.html'), 'existing redirects preserved');
+assert.ok(redirects.includes('/index.html'), 'existing redirects preserved');
 const adminHeaders = vercel.headers.find((h) => h.source === '/admin');
 assert.equal(adminHeaders.headers[0].value, 'noindex, nofollow', 'admin noindex header preserved');
 
