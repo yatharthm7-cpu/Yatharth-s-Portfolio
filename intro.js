@@ -14,12 +14,17 @@
   var bar = intro.querySelector(".intro-progress");
   var coveredContent = [document.querySelector(".navbar"), document.getElementById("main"), document.querySelector(".footer")].filter(Boolean);
   var scheduled = false;
+  var distance = window.innerHeight;
+
+  function measure() {
+    distance = spacer.getBoundingClientRect().height || window.innerHeight;
+    schedule();
+  }
 
   function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 
   function update() {
     scheduled = false;
-    var distance = spacer.getBoundingClientRect().height || window.innerHeight;
     var progress = clamp(window.scrollY / distance, 0, 1);
     var opening = clamp((progress - 0.05) / 0.7, 0, 1);
     var curtainShift = (opening * 102).toFixed(2) + "%";
@@ -45,7 +50,8 @@
 
   document.documentElement.classList.add("intro-ready");
   window.addEventListener("scroll", schedule, { passive: true });
-  window.addEventListener("resize", schedule);
-  window.addEventListener("pageshow", schedule);
+  window.addEventListener("resize", measure);
+  window.addEventListener("pageshow", measure);
+  measure();
   update();
 })();

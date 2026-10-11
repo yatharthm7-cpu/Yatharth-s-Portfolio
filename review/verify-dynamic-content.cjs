@@ -51,6 +51,11 @@ async function main() {
   assert.equal(result.workGrid.children.length, 1);
   assert.equal(result.servicesGrid.children.length, 1);
   const project = result.workGrid.children[0];
+  const responsivePicture = project.children[0].children[0];
+  assert.equal(responsivePicture.tag, 'picture', 'Known local screenshots use responsive pictures after CMS rendering');
+  assert.equal(responsivePicture.children[0].type, 'image/webp');
+  assert.match(responsivePicture.children[0].srcset, /work-shakti-640\.webp 640w/);
+  assert.equal(responsivePicture.children[1].src, 'assets/work-shakti.jpg', 'The original image remains the fallback');
   assert.equal(project.children[1].children[1].textContent, '<script>Project</script>', 'Content stays text, not HTML');
   const projectLink = project.children[1].children[4];
   assert.equal(projectLink.target, '_blank', 'External project links open in a new tab');
@@ -82,6 +87,10 @@ async function main() {
 
   const failed = await run({ ok: false });
   assert.equal(failed.workGrid.children.length, 0, 'A failed API call does not replace built-in cards');
+  const external = await run({ ok: true, json: async () => [{ ...entries[0], image_url: 'https://example.com/assets/work-shakti.jpg' }] });
+  const externalImage = external.workGrid.children[0].children[0].children[0];
+  assert.equal(externalImage.tag, 'img', 'External CMS images must not be substituted with local variants');
+  assert.equal(externalImage.src, 'https://example.com/assets/work-shakti.jpg');
   console.log('PASS: published content renders safely and API failures retain the portfolio fallback.');
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

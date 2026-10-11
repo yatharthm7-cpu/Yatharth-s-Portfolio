@@ -100,7 +100,20 @@
       image.height = 802;
       image.loading = "lazy";
       image.decoding = "async";
-      picture.append(image);
+      // Only known local project screenshots have generated responsive variants.
+      var localProject = imageUrl.match(/^(?:\/|https:\/\/scaleupbiz\.co\.in\/)?assets\/(work-(?:shakti|anaya|anoobie))\.jpg$/);
+      if (localProject) {
+        var responsivePicture = node("picture");
+        var source = node("source");
+        var base = "/assets/" + localProject[1];
+        source.type = "image/webp";
+        source.srcset = base + "-640.webp 640w, " + base + "-960.webp 960w, " + base + "-1425.webp 1425w";
+        source.sizes = "(max-width: 700px) calc(100vw - 42px), (max-width: 1000px) 660px, 420px";
+        responsivePicture.append(source, image);
+        picture.append(responsivePicture);
+      } else {
+        picture.append(image);
+      }
     }
 
     var body = node("div", "project-card-content");

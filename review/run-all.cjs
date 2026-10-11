@@ -17,6 +17,8 @@ const nodeSuites = [
   "verify-dynamic-content.cjs",
   "verify-testimonial-cards.cjs",
   "check-faq.cjs",
+  "verify-credential-scanner.cjs",
+  "scan-credentials.cjs",
 ];
 const pySuites = ["verify-seo.py"];
 

@@ -88,7 +88,8 @@
   <!-- Fonts (fall back to system fonts if offline) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
 
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="circular-nav.css" />
@@ -105,7 +106,7 @@
   <div class="intro-overlay" id="introOverlay" aria-label="Portfolio introduction">
     <div class="intro-panel intro-panel-left" aria-hidden="true"></div>
     <div class="intro-panel intro-panel-right" aria-hidden="true"></div>
-    <div class="intro-topline" aria-hidden="true"><span class="intro-brand"><img class="brand-logo" src="/branding/scaleupbiz-mark.png" alt="ScaleUpBiz logo" width="56" height="56" />ScaleUpBiz</span><span>INDEPENDENT CREATIVE / INDIA</span></div>
+    <div class="intro-topline" aria-hidden="true"><span class="intro-brand"><img class="brand-logo" src="/branding/scaleupbiz-mark.png" srcset="/branding/scaleupbiz-mark-112.webp 112w, /branding/scaleupbiz-mark.png 224w" sizes="56px" alt="ScaleUpBiz logo" width="56" height="56" />ScaleUpBiz</span><span>INDEPENDENT CREATIVE / INDIA</span></div>
     <div class="intro-copy">
       <p class="intro-kicker">Websites · Marketing · Connected experiences</p>
       <p class="intro-title" aria-hidden="true">YATHARTH<span class="intro-star">✳</span></p>
@@ -119,7 +120,7 @@
   </div>
   <header class="navbar" id="navbar">
     <div class="container nav-inner">
-      <a href="#home" class="brand" aria-label="ScaleUpBiz, home"><img class="brand-logo" src="/branding/scaleupbiz-mark.png" alt="ScaleUpBiz logo" width="56" height="56" /><span class="brand-name">ScaleUpBiz</span></a>
+      <a href="#home" class="brand" aria-label="ScaleUpBiz, home"><img class="brand-logo" src="/branding/scaleupbiz-mark.png" srcset="/branding/scaleupbiz-mark-112.webp 112w, /branding/scaleupbiz-mark.png 224w" sizes="56px" alt="ScaleUpBiz logo" width="56" height="56" /><span class="brand-name">ScaleUpBiz</span></a>
       <button class="nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
         <span></span><span></span><span></span>
       </button>
@@ -198,7 +199,7 @@
         <div class="project-grid">
           <article class="project-card" aria-labelledby="project-shakti">
             <div class="project-card-image">
-              <img src="assets/work-shakti.jpg" alt="Shakti Mathiya homepage screenshot" width="1425" height="802" loading="lazy" decoding="async" />
+              <picture><source type="image/webp" srcset="assets/work-shakti-640.webp 640w, assets/work-shakti-960.webp 960w, assets/work-shakti-1425.webp 1425w" sizes="(max-width: 700px) calc(100vw - 42px), (max-width: 1000px) 660px, 420px" /><img src="assets/work-shakti.jpg" alt="Shakti Mathiya homepage screenshot" width="1425" height="802" loading="lazy" decoding="async" /></picture>
             </div>
             <div class="project-card-content">
               <div class="project-card-meta">
@@ -219,7 +220,7 @@
           </article>
           <article class="project-card" aria-labelledby="project-anaya">
             <div class="project-card-image">
-              <img src="assets/work-anaya.jpg" alt="Anaya’s Kitchen homepage screenshot" width="1425" height="802" loading="lazy" decoding="async" />
+              <picture><source type="image/webp" srcset="assets/work-anaya-640.webp 640w, assets/work-anaya-960.webp 960w, assets/work-anaya-1425.webp 1425w" sizes="(max-width: 700px) calc(100vw - 42px), (max-width: 1000px) 660px, 420px" /><img src="assets/work-anaya.jpg" alt="Anaya’s Kitchen homepage screenshot" width="1425" height="802" loading="lazy" decoding="async" /></picture>
             </div>
             <div class="project-card-content">
               <div class="project-card-meta">
@@ -240,7 +241,7 @@
           </article>
           <article class="project-card" aria-labelledby="project-anoobie">
             <div class="project-card-image">
-              <img src="assets/work-anoobie.jpg" alt="aNoobieCooKie homepage screenshot" width="1425" height="802" loading="lazy" decoding="async" />
+              <picture><source type="image/webp" srcset="assets/work-anoobie-640.webp 640w, assets/work-anoobie-960.webp 960w, assets/work-anoobie-1425.webp 1425w" sizes="(max-width: 700px) calc(100vw - 42px), (max-width: 1000px) 660px, 420px" /><img src="assets/work-anoobie.jpg" alt="aNoobieCooKie homepage screenshot" width="1425" height="802" loading="lazy" decoding="async" /></picture>
             </div>
             <div class="project-card-content">
               <div class="project-card-meta">
@@ -618,7 +619,7 @@
 
   <footer class="footer">
     <div class="container footer-inner">
-      <a href="#home" class="brand" aria-label="ScaleUpBiz, back to top"><img class="brand-logo" src="/branding/scaleupbiz-mark.png" alt="ScaleUpBiz logo" width="56" height="56" /><span class="brand-name">ScaleUpBiz</span></a>
+      <a href="#home" class="brand" aria-label="ScaleUpBiz, back to top"><img class="brand-logo" src="/branding/scaleupbiz-mark.png" srcset="/branding/scaleupbiz-mark-112.webp 112w, /branding/scaleupbiz-mark.png 224w" sizes="56px" alt="ScaleUpBiz logo" width="56" height="56" /><span class="brand-name">ScaleUpBiz</span></a>
       <p>Independent thinking. Considered work.</p>
       <a href="/website-development/" class="text-link">Website development <span aria-hidden="true">↗</span></a>
       <a href="#home" class="text-link">Back to top <span aria-hidden="true">↑</span></a>

@@ -2,6 +2,10 @@
   "name": "scaleupbiz-portfolio",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "test": "node review/run-all.cjs",
+    "check:credentials": "node review/scan-credentials.cjs"
+  },
   "engines": {
     "node": "24.x"
   },

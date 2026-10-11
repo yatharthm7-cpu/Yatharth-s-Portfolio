@@ -57,7 +57,7 @@ for tag, attrs in page.tags:
         elif value and not parsed.scheme and parsed.path:
             assert (ROOT / parsed.path.lstrip("/")).exists(), f"Missing asset: {value}"
     for candidate in attrs.get("srcset", "").split(","):
-        if candidate.strip(): assert (ROOT / candidate.strip().split()[0]).exists(), "Missing responsive image"
+        if candidate.strip(): assert (ROOT / candidate.strip().split()[0].lstrip("/")).exists(), "Missing responsive image"
 schema = [json.loads(text) for attrs, text in page.scripts if attrs.get("type") == "application/ld+json"]
 assert len(schema) == 1
 graph = schema[0]["@graph"]
